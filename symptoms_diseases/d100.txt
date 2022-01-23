@@ -1,0 +1,100 @@
+Morphological and Microscopic Findings
+Infections
+Aneurysm, Infected
+Arthritis, Infectious
+Arthritis, Reactive
+Asymptomatic Infections
+Bacterial Infections and Mycoses
+Bacterial Infections
+Bacteremia
+Hemorrhagic Septicemia
+Central Nervous System Bacterial Infections
+Lyme Neuroborreliosis
+Meningitis, Bacterial
+Meningitis, Escherichia coli
+Meningitis, Haemophilus
+Meningitis, Listeria
+Meningitis, Meningococcal
+Waterhouse-Friderichsen Syndrome
+Meningitis, Pneumococcal
+Tuberculosis, Meningeal
+Neurosyphilis
+Tabes Dorsalis
+Tuberculosis, Central Nervous System
+Tuberculoma, Intracranial
+Tuberculosis, Meningeal
+Endocarditis, Bacterial
+Endocarditis, Subacute Bacterial
+Eye Infections, Bacterial
+Conjunctivitis, Bacterial
+Conjunctivitis, Inclusion
+Ophthalmia Neonatorum
+Trachoma
+Hordeolum
+Keratoconjunctivitis, Infectious
+Tuberculosis, Ocular
+Uveitis, Suppurative
+Panophthalmitis
+Fournier Gangrene
+Gram-Negative Bacterial Infections
+Aliivibrio Infections
+Anaplasmataceae Infections
+Anaplasmosis
+Ehrlichiosis
+Heartwater Disease
+Anaplasmosis
+Bacteroidaceae Infections
+Bacteroides Infections
+Bartonellaceae Infections
+Bartonella Infections
+Angiomatosis, Bacillary
+Cat-Scratch Disease
+Trench Fever
+Bordetella Infections
+Whooping Cough
+Brucellosis
+Brucellosis, Bovine
+Burkholderia Infections
+Glanders
+Melioidosis
+Campylobacter Infections
+Chlamydiaceae Infections
+Chlamydia Infections
+Chlamydial Pneumonia
+Conjunctivitis, Inclusion
+Lymphogranuloma Venereum
+Trachoma
+Chlamydophila Infections
+Chlamydial Pneumonia
+Psittacosis
+Cytophagaceae Infections
+Desulfovibrionaceae Infections
+Ehrlichiosis
+Heartwater Disease
+Enterobacteriaceae Infections
+Dysentery, Bacillary
+Escherichia coli Infections
+Meningitis, Escherichia coli
+Granuloma Inguinale
+Klebsiella Infections
+Rhinoscleroma
+Proteus Infections
+Salmonella Infections
+Paratyphoid Fever
+Salmonella Food Poisoning
+Salmonella Infections, Animal
+Typhoid Fever
+Serratia Infections
+Yersinia Infections
+Plague
+Yersinia pseudotuberculosis Infections
+Flavobacteriaceae Infections
+Foot Rot
+Fusobacteriaceae Infections
+Fusobacterium Infections
+Gingivitis, Necrotizing Ulcerative
+Lemierre Syndrome
+Helicobacter Infections
+Legionellosis
+Legionnaires Disease
+Lyme Disease
