@@ -24,7 +24,6 @@ while ($line = <USER>) {
     $output = get($url);
     my @matches = $output =~ m(<Id>(.*)</Id>)g;
     print OUT "$line" . "\t" . "@matches\n";
-
 }
 
 close USER;

@@ -20,26 +20,26 @@ open OUT, ">/projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_d
 open(USER1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/d100.txt") or die "Couldn't open file: d100.txt";
 open(USER2, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/s100.txt") or die "Couldn't open file: s100.txt";
 
+open(FH, ">>dp.txt") or die $!;
 while ($line1 = <USER1>) {
     chomp $line1;
     $line1 = $line1 . "[mesh]";
     $url = $base . "esearch.fcgi?db=$db&term=$line1&retmin=0&retmax=50000&usehistory=y";
     $output = get($url);
     my @matches = $output =~ m(<Id>(.*)</Id>)g;
-    open(FH, ">>dp.txt") or die $!;
     print FH "@matches\n";
-    close FH;
 }
+close FH;
 
+open(FH2, ">>sp.txt") or die $!;
 while ($line2 = <USER2>) {
     chomp $line2;
     $url2 = $base . "esearch.fcgi?db=$db&term=$line2&retmin=0&retmax=50000&usehistory=y";
     $output2 = get($url2);
     my @matches2 = $output2 =~ m(<Id>(.*)</Id>)g;
-    open(FH2, ">>sp.txt") or die $!;
     print FH2 "@matches2\n";
-    close FH2;
 }
+close FH2;
 
 open(DATA1, "<dp.txt") or die "Couldn't open file: dp.txt";
 my @AoA;

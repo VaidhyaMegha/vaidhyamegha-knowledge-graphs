@@ -1,11 +1,11 @@
 use warnings;
 use strict;
-open(OUT, ">phegeni.tsv");
-open(USER1, "<PheGenI_Association_full.tab");
-open(USER2, "<symptoms.tsv");
+open(OUT, ">/projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/phegeni.tsv");
+open(FILE1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/PheGenI_Association_full.tab");
+open(FILE2, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/symptoms.tsv");
 
-my (@array1) = <USER1>;
-my (@array2) = <USER2>;
+my (@array1) = <FILE1>;
+my (@array2) = <FILE2>;
 my ($i);
 my ($j);
 
@@ -20,6 +20,6 @@ foreach $i (@array1) {
     }
 }
 
-close(USER1);
-close(USER2);
+close(FILE1);
+close(FILE2);
 close OUT;
