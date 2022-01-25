@@ -13,7 +13,7 @@
 - Clinicians and epidemiologists are interested with the results of GWAS because it helps to study design considerations and generation of biological hypotheses.
 - GWAS consists of various results that is SNP rs,Gene ,Gene ID,Gene2,Gene ID2,Chromosome and Pubmed ids.
 - Phegeni Association results can be accessed from here - https://www.ncbi.nlm.nih.gov/gap/phegeni
-- [This](./bs1.pl) program gives the list of SNP rs,Gene ,Gene ID,Gene2,Gene ID2,Chromosome and Pubmed ids of respective phenotype term.
+- [This](./phenotype_genotype.pl) program gives the list of SNP rs,Gene ,Gene ID,Gene2,Gene ID2,Chromosome and Pubmed ids of respective phenotype term.
 - **Input** file contains a list of phenotype search terms based on MESH and the sample file looks as below.
 - **Output** file: Output file contains list of SNP rs,Gene ,Gene ID,Gene2,Gene ID2,Chromosome and Pubmed ids of respective phenotype term.
 - In this way,we can retrieve genetic variants related to any Phenotype(s).
