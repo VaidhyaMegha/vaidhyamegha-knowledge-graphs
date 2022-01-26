@@ -11,6 +11,7 @@
 ## Health
 
 ### Open Knowledge Graph on Clinical trials
+
 - Input : Mesh RDF
 - Output : Clinical Trials RDF with below constituent ids and their relationships
   - MeSH, Clinical Trial, PubMed Article, Symptom/Phenotype, Genotype(from Human Genome), Disease/ICD10
