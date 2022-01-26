@@ -4,7 +4,7 @@ This repo will host open knowledge graphs from [VaidhyaMegha](https://vaidhyameg
 
 # Open Knowledge Graph on Clinical Trials
 
-VaidhyaMegha is planning to build an open knowledge graph on clinical trials, comprising
+VaidhyaMegha is building an open [knowledge graph]([knowledge graph](https://arxiv.org/pdf/2003.02320.pdf)) on clinical trials, comprising
 
 - Clinical trial ids from across the globe
 - MeSH ids for
@@ -40,4 +40,8 @@ VaidhyaMegha's [prior work](https://github.com/VaidhyaMegha/vaidhyamegha-knowled
 - phenotype to genotype linking.
 - trials to research articles linking.
 
-Last 3 are covered in the ['examples'](examples) folder. They were covered in prior work in separate public repos.
+Last 3 are covered in the ["examples"](examples) folder [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs). They were covered in separate public repos [here](https://github.com/VaidhyaMegha/) earlier.
+
+## Documentation
+
+More notes is available [here](docs/open_knowledge_graph_on_clinical_trials/README.md)
