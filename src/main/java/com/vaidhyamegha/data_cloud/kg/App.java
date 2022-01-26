@@ -8,9 +8,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
 
@@ -20,11 +18,15 @@ import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
  */
 public class App {
 
+    private static final String PIPE = "\\|";
     @Option(name = "-o", aliases = "--output-rdf", usage = "Path to the final RDF file" , required = false)
     private File out = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt");
 
     @Option(name = "-v", aliases = "--mesh-vocab-rdf", usage = "Path to the downloaded MeSH Vocabulary Turtle file.", required = false)
     private String meshVocab = "data/open_knowledge_graph_on_clinical_trials/vocabulary_1.0.0.ttl";
+
+    @Option(name = "-c", aliases = "--clinical-trials", usage = "Path to the trials file with MeSH ids for conditions.", required = false)
+    private String trialsFile = "data/open_knowledge_graph_on_clinical_trials/browse_conditions.txt";
 
     @Option(name = "-m", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
     private String meshRDF = "data/open_knowledge_graph_on_clinical_trials/mesh2022.nt";
@@ -59,7 +61,17 @@ public class App {
             Model model = ModelFactory.createDefaultModel() ;
             model.read(meshRDF, "NT") ;
 
+            Property p = model.createProperty("Condition");
+
+            BufferedReader br = new BufferedReader(new FileReader(trialsFile));
+            String line = "";
+            while((line = br.readLine()) != null) {
+                String[] l = line.split(PIPE);
+                model.add(model.createResource(l[1]), p, l[2]);
+            }
+
             RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT) ;
+
 
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
