@@ -67,17 +67,25 @@ public class App {
                 model.read(meshRDF, "NT");
 
                 Property p = model.createProperty("Condition");
+                Property id = model.createProperty("TrialId");
 
                 BufferedReader br = new BufferedReader(new FileReader(trialsFile));
                 String line = br.readLine();
 
                 while ((line = br.readLine()) != null) {
                     String[] l = line.split(PIPE);
-                    Literal literal = model.createLiteral(l[2], "en");
+                    String trialId = l[1];
+                    String conditionMeSHTerm = l[2];
+
+                    Resource r = model.createResource("<https://clinicaltrials.gov/ct2/show/" + trialId + ">");
+
+                    model.add(r, id, trialId);
+
+                    Literal literal = model.createLiteral(conditionMeSHTerm, "en");
                     Selector selector = new SimpleSelector(null, null, literal);
                     StmtIterator si = model.listStatements(selector);
 
-                    if (si.hasNext()) model.add(model.createResource(l[1]), p, si.nextStatement().getSubject());
+                    if (si.hasNext()) model.add(r, p, si.nextStatement().getSubject());
                 }
 
                 RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
