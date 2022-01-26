@@ -31,6 +31,10 @@ Below is a brief specification
 
   `MEDLINE produces co-occurrence files under the codename MRCOC. More information is available in the 2016 report Building an Updated MEDLINE Co-Occurrences (MRCOC) File. These files might be a viable alternative to the analyses in this repository for certain applications. However, they don't appear to contain topics for supplemental concept records (for example MeSH term C000591739). Feel free to open an issue with additional insights on or comparisons to MRCOC`
 
+# References
+
+- Using Apache Jena : [read RDF files](https://jena.apache.org/documentation/io/rdf-input.html)
+- Using Apache Jena : [write RDF files](https://jena.apache.org/documentation/io/rdf-output.html)
 
 # Tools
 
