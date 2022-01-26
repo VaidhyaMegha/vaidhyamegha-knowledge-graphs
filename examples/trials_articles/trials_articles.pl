@@ -13,9 +13,9 @@ $db = "pubmed";
 $base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 
 open OUT, ">/projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/trials_articles/results.txt";
-open(USER, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/trials_articles/NCTNumbers.txt") or die "Couldn't open file: NCTNumbers.txt";
+open(FILE1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/trials_articles/NCTNumbers.txt") or die "Couldn't open file: NCTNumbers.txt";
 
-while ($line = <USER>) {
+while ($line = <FILE1>) {
     chomp $line;
     $line = $line . "[si]";
 
@@ -26,5 +26,5 @@ while ($line = <USER>) {
     print OUT "$line" . "\t" . "@matches\n";
 }
 
-close USER;
+close FILE1;
 close OUT;

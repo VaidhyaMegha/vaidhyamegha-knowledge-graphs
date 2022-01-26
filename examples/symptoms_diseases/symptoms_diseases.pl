@@ -17,11 +17,11 @@ my ($output2);
 $db = "pubmed";
 $base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
 open OUT, ">/projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/final.txt";
-open(USER1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/d100.txt") or die "Couldn't open file: d100.txt";
-open(USER2, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/s100.txt") or die "Couldn't open file: s100.txt";
+open(FILE1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/d100.txt") or die "Couldn't open file: d100.txt";
+open(FILE2, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/symptoms_diseases/s100.txt") or die "Couldn't open file: s100.txt";
 
 open(FH, ">>dp.txt") or die $!;
-while ($line1 = <USER1>) {
+while ($line1 = <FILE1>) {
     chomp $line1;
     $line1 = $line1 . "[mesh]";
     $url = $base . "esearch.fcgi?db=$db&term=$line1&retmin=0&retmax=50000&usehistory=y";
@@ -32,7 +32,7 @@ while ($line1 = <USER1>) {
 close FH;
 
 open(FH2, ">>sp.txt") or die $!;
-while ($line2 = <USER2>) {
+while ($line2 = <FILE2>) {
     chomp $line2;
     $url2 = $base . "esearch.fcgi?db=$db&term=$line2&retmin=0&retmax=50000&usehistory=y";
     $output2 = get($url2);
@@ -64,6 +64,6 @@ foreach my $i (0 .. $#AoA) {
     }
 }
 
-close USER1;
-close USER2;
+close FILE1;
+close FILE2;
 close OUT;
