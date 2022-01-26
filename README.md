@@ -13,6 +13,11 @@ VaidhyaMegha is building an open [knowledge graph]([knowledge graph](https://arx
 - PubMed Article ids
 - Genotype(from Human Genome),
 
+## Current state 
+
+- v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. 
+- Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
+
 ## Specification
 
 Below is a very brief specification
