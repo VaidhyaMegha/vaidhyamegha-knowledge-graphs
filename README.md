@@ -22,6 +22,7 @@ Below is a very brief specification
     - WHO's clinical trials database - [ICTRP](https://www.who.int/clinical-trials-registry-platform).
     - US clinical trial [registry ](https://clinicaltrials.gov)data from CTTI's [AACT](https://aact.ctti-clinicaltrials.org/download) database.
     - Data from clinical trial registries across the globe scraped from their websites' ex: [India](http://ctri.nic.in/Clinicaltrials/login.php)
+    - MEDLINE Co-Occurrences [(MRCOC)](https://lhncbc.nlm.nih.gov/ii/information/MRCOC.html) Files
 - Outputs
     - Clinical Trials RDF with below constituent ids and their relationships
         - MeSH, Clinical Trial, PubMed Article, Symptom/Phenotype, Genotype(from Human Genome)
