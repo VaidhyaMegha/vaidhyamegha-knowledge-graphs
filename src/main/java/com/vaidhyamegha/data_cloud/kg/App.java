@@ -1,8 +1,10 @@
 package com.vaidhyamegha.data_cloud.kg;
 
+
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+
 import org.apache.jena.util.FileManager;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -64,14 +66,18 @@ public class App {
             Property p = model.createProperty("Condition");
 
             BufferedReader br = new BufferedReader(new FileReader(trialsFile));
-            String line = "";
+            String line = br.readLine();
+
             while((line = br.readLine()) != null) {
                 String[] l = line.split(PIPE);
-                model.add(model.createResource(l[1]), p, l[2]);
+                Literal literal = model.createLiteral(l[2], "en");
+                Selector selector = new SimpleSelector(null, null, literal);
+                StmtIterator si = model.listStatements(selector);
+
+                if(si.hasNext()) model.add(model.createResource(l[1]), p, si.nextStatement().getSubject());
             }
 
             RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT) ;
-
 
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
