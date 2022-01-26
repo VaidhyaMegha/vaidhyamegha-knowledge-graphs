@@ -33,6 +33,9 @@ public class App {
     @Option(name = "-m", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
     private String meshRDF = "data/open_knowledge_graph_on_clinical_trials/mesh2022.nt";
 
+    @Option(name = "-b", aliases = "--mode", usage = "Build RDF or query pre-built RDF?", required = false)
+    private MODE mode = MODE.BUILD;
+
     @Option(name = "-t", aliases = "--trial-id", usage = "Clinical trial's registered id.", required = false)
     private String trial;
 
@@ -53,32 +56,34 @@ public class App {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
-            parser.parseArgument(args);
+            if(mode == MODE.BUILD) {
+                parser.parseArgument(args);
 
-            FileManager.getInternal().addLocatorClassLoader(App.class.getClassLoader());
+                FileManager.getInternal().addLocatorClassLoader(App.class.getClassLoader());
+                Model vocab = ModelFactory.createDefaultModel();
+                vocab.read(meshVocab, "TURTLE");
 
-            Model vocab = ModelFactory.createDefaultModel() ;
-            vocab.read(meshVocab, "TURTLE") ;
+                Model model = ModelFactory.createDefaultModel();
+                model.read(meshRDF, "NT");
 
-            Model model = ModelFactory.createDefaultModel() ;
-            model.read(meshRDF, "NT") ;
+                Property p = model.createProperty("Condition");
 
-            Property p = model.createProperty("Condition");
+                BufferedReader br = new BufferedReader(new FileReader(trialsFile));
+                String line = br.readLine();
 
-            BufferedReader br = new BufferedReader(new FileReader(trialsFile));
-            String line = br.readLine();
+                while ((line = br.readLine()) != null) {
+                    String[] l = line.split(PIPE);
+                    Literal literal = model.createLiteral(l[2], "en");
+                    Selector selector = new SimpleSelector(null, null, literal);
+                    StmtIterator si = model.listStatements(selector);
 
-            while((line = br.readLine()) != null) {
-                String[] l = line.split(PIPE);
-                Literal literal = model.createLiteral(l[2], "en");
-                Selector selector = new SimpleSelector(null, null, literal);
-                StmtIterator si = model.listStatements(selector);
+                    if (si.hasNext()) model.add(model.createResource(l[1]), p, si.nextStatement().getSubject());
+                }
 
-                if(si.hasNext()) model.add(model.createResource(l[1]), p, si.nextStatement().getSubject());
+                RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
+            } else {
+                throw new UnsupportedOperationException("Query mode is not yet supported");
             }
-
-            RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT) ;
-
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java App [options...] arguments...");

@@ -4,7 +4,7 @@ This repo will host open knowledge graphs from [VaidhyaMegha](https://vaidhyameg
 
 # Open Knowledge Graph on Clinical Trials
 
-VaidhyaMegha is building an open [knowledge graph]([knowledge graph](https://arxiv.org/pdf/2003.02320.pdf)) on clinical trials, comprising
+VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on clinical trials, comprising
 
 - Clinical trial ids from across the globe
 - MeSH ids for
