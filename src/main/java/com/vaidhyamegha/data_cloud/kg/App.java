@@ -12,7 +12,9 @@ import org.kohsuke.args4j.Option;
 
 import java.io.*;
 import java.sql.*;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
 
@@ -25,6 +27,9 @@ public class App {
     private static final String PIPE = "\\|";
     @Option(name = "-o", aliases = "--output-rdf", usage = "Path to the final RDF file", required = false)
     private File out = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt");
+
+    @Option(name = "-l", aliases = "--output-trials-list", usage = "Path to the list of trial ids file", required = false)
+    private File trials = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv");
 
     @Option(name = "-v", aliases = "--mesh-vocab-rdf", usage = "Path to the downloaded MeSH Vocabulary Turtle file.", required = false)
     private String meshVocab = "data/open_knowledge_graph_on_clinical_trials/vocabulary_1.0.0.ttl";
@@ -70,6 +75,8 @@ public class App {
                 Model model = ModelFactory.createDefaultModel();
                 model.read(meshRDF, "NT");
 
+                addAllTrials(model, prop);
+                
                 addTrialConditions(model, prop);
 
                 addTrialInterventions(model, prop);
@@ -88,26 +95,91 @@ public class App {
         }
     }
 
-    private void addTrialConditions(Model model, Properties prop) {
-        String SQL_SELECT = prop.getProperty("aact_browse_conditions");
-        Property p = model.createProperty("Condition");
-
-        addTrialToMeSHLinks(model, prop, SQL_SELECT, p);
-    }
-
-    private void addTrialInterventions(Model model, Properties prop) {
-        String SQL_SELECT = prop.getProperty("aact_browse_interventions");
-        Property p = model.createProperty("Intervention");
-
-        addTrialToMeSHLinks(model, prop, SQL_SELECT, p);
-    }
-
-    private void addTrialToMeSHLinks(Model model, Properties prop, String SQL_SELECT, Property p) {
+    private void addAllTrials(Model model, Properties prop) throws IOException {
         Property id = model.createProperty("TrialId");
+        Set<String> trialIds = new HashSet<>();
+
+        String query = prop.getProperty("aact_trial_ids");
 
         try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
                 prop.getProperty("user"), prop.getProperty("password"));
-             PreparedStatement preparedStatement = conn.prepareStatement(SQL_SELECT)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String trialId = resultSet.getString("trial_id");
+
+                Resource r = model.createResource("https://clinicaltrials.gov/ct2/show/" + trialId);
+
+                model.add(r, id, trialId);
+
+                trialIds.add(trialId);
+            }
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Sorry, unable to connect to database");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Sorry, unable to connect to database");
+        }
+
+        query = prop.getProperty("ictrp_trial_ids");
+        
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("ictrp_url"),
+                prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String trialId = resultSet.getString("trial_id");
+                String uri = "https://www.who.int/clinical-trials-registry-platform/" + trialId;
+
+                if (trialId.startsWith("NCT")) uri = "https://clinicaltrials.gov/ct2/show/" + trialId;
+
+                Resource r = model.createResource(uri);
+
+                model.add(r, id, trialId);
+
+                trialIds.add(trialId);
+            }
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Sorry, unable to connect to database");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Sorry, unable to connect to database");
+        }
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
+
+            for (String s:trialIds) bw.write(s + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Sorry, unable to write trials file");
+        }
+    }
+
+    private void addTrialConditions(Model model, Properties prop) {
+        String query = prop.getProperty("aact_browse_conditions");
+        Property p = model.createProperty("Condition");
+
+        addTrialToMeSHLinks(model, prop, query, p);
+    }
+
+    private void addTrialInterventions(Model model, Properties prop) {
+        String query = prop.getProperty("aact_browse_interventions");
+        Property p = model.createProperty("Intervention");
+
+        addTrialToMeSHLinks(model, prop, query, p);
+    }
+
+    private void addTrialToMeSHLinks(Model model, Properties prop, String query, Property p) {
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -115,9 +187,7 @@ public class App {
                 String trialId = resultSet.getString("nct_id");
                 String conditionMeSHTerm = resultSet.getString("mesh_term");
 
-                Resource r = model.createResource("https://clinicaltrials.gov/ct2/show/" + trialId);
-
-                model.add(r, id, trialId);
+                Resource r = model.getResource("https://clinicaltrials.gov/ct2/show/" + trialId);
 
                 Literal literal = model.createLiteral(conditionMeSHTerm, "en");
                 Selector selector = new SimpleSelector(null, null, literal);

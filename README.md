@@ -15,13 +15,26 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Release notes 
 - v0.3
-  - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF.
-- v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. 
-- Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
+  - Trial records are fetched from ICTRP's weekly + periodic full export and AACT's daily + monthly full snapshot. 
+  - Trials are written down to a file (will be used later) : [vaidhyamegha_clinical_trials.csv](data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv)
+
+    `$ wc -l vaidhyamegha_clinical_trials.csv
+    755272 vaidhyamegha_clinical_trials.csv`
+
+  - Trial's nodes/edges are added to RDF. For example :
+
+    `<https://clinicaltrials.gov/ct2/show/NCT00172328> <TrialId> "NCT00172328" .`
+  
+  - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF. For exmaple :
+
+    `<https://clinicaltrials.gov/ct2/show/NCT00093782> <Condition> <http://id.nlm.nih.gov/mesh/2022/T000687> .
+    <https://clinicaltrials.gov/ct2/show/NCT00093782> <Intervention> <http://id.nlm.nih.gov/mesh/2022/T538652> .`
+  
+  - v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. For example : 
+  - Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
 
 ## Next steps 
 
-- Full list of trial ids to be generated from ICTRP's weekly + Full export and AACT's weekly full snapshot
 - List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
 - 
