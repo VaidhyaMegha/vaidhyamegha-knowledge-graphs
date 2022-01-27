@@ -13,10 +13,18 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - PubMed Article ids
 - Genotype(from Human Genome),
 
-## Current state 
-
+## Release notes 
+- v0.3
+  - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF.
 - v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. 
 - Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
+
+## Next steps 
+
+- Full list of trial ids to be generated from ICTRP's weekly + Full export and AACT's weekly full snapshot
+- List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
+- Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
+- 
 
 ## Specification
 

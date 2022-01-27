@@ -36,7 +36,8 @@ Below is a brief specification
 - [Read](https://jena.apache.org/documentation/io/rdf-input.html) RDF files
 - [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
 - [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
-
+- [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
+- 
 # Tools
 
 - Apache Jena 
