@@ -19,3 +19,11 @@
 `pg_restore --host "host_address" --port "port_number" --username "User Name" --no-password --role "postgres" --dbname "Database Name" --no-owner --no-privileges --verbose "filePath/postgres_data.dmp"`
 
 ## ICTRP database download/restore steps
+
+- ICTRP will update clinical trials data weekly.
+- Download weekly data from [here](https://worldhealthorg-my.sharepoint.com/personal/karamg_who_int/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fkaramg%5Fwho%5Fint%2FDocuments%2FICTRP%20weekly%20updates) on local machine.
+- Unzip the downloaded file and you should have .csv file.
+- Connect to database on Pstgre server.
+- Import the .csv file from local machine to PostgreSQL using following command :
+
+`\COPY "table_name" FROM '/file_location/file_name.csv' DELIMITER ',' CSV QUOTE AS '"' HEADER;`
