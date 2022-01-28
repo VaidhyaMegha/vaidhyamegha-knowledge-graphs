@@ -23,7 +23,7 @@ public class ESearchResult {
 
     @XmlElementWrapper(name="IdList")
     @XmlElement(name="Id")
-    private List<String> idList;
+    private List<Integer> idList;
 
     @Override
     public String toString() {

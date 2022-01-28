@@ -43,6 +43,13 @@ Below is a brief specification
 - JAXB [impl](https://stackoverflow.com/a/61283181/294552) in Java 11
 - JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
 - Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
+- PostgreSQL [array](https://www.postgresql.org/docs/9.1/arrays.html) columns
+  - JDBC [insert](https://tonaconsulting.wordpress.com/2013/05/28/postgres-and-multi-dimensions-arrays-in-jdbc/) into array columns
+
+# MeSH
+
+- [Tree](https://meshb.nlm.nih.gov/treeView) view
+- [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
 
 # Tools
 
