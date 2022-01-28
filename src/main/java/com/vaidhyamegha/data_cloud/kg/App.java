@@ -2,6 +2,8 @@ package com.vaidhyamegha.data_cloud.kg;
 
 
 import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.impl.StatementImpl;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
@@ -68,18 +70,21 @@ public class App {
                 ClassLoader cl = App.class.getClassLoader();
                 prop = readProperties(cl);
 
-                FileManager.getInternal().addLocatorClassLoader(cl);
-                Model vocab = ModelFactory.createDefaultModel();
-                vocab.read(meshVocab, "TURTLE");
-
                 Model model = ModelFactory.createDefaultModel();
-                model.read(meshRDF, "NT");
+
 
                 addAllTrials(model, prop);
-                
-                addTrialConditions(model, prop);
 
-                addTrialInterventions(model, prop);
+                FileManager.getInternal().addLocatorClassLoader(cl);
+
+//                Model vocab = ModelFactory.createDefaultModel();
+//                vocab.read(meshVocab, "TURTLE");
+
+                Model meshModel = ModelFactory.createDefaultModel();
+                meshModel.read(meshRDF, "NT");
+
+                addTrialConditions(model, meshModel, prop);
+                addTrialInterventions(model, meshModel, prop);
 
                 RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
             } else {
@@ -97,7 +102,7 @@ public class App {
 
     private void addAllTrials(Model model, Properties prop) throws IOException {
         Property id = model.createProperty("TrialId");
-        Set<String> trialIds = new HashSet<>();
+        BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
 
         String query = prop.getProperty("aact_trial_ids");
 
@@ -114,7 +119,7 @@ public class App {
 
                 model.add(r, id, trialId);
 
-                trialIds.add(trialId);
+                bw.write(trialId + "\n");
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
@@ -142,7 +147,7 @@ public class App {
 
                 model.add(r, id, trialId);
 
-                trialIds.add(trialId);
+                bw.write(trialId + "\n");
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
@@ -151,32 +156,23 @@ public class App {
             e.printStackTrace();
             throw new RuntimeException("Sorry, unable to connect to database");
         }
-
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
-
-            for (String s:trialIds) bw.write(s + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Sorry, unable to write trials file");
-        }
     }
 
-    private void addTrialConditions(Model model, Properties prop) {
+    private void addTrialConditions(Model model, Model meshModel, Properties prop) {
         String query = prop.getProperty("aact_browse_conditions");
         Property p = model.createProperty("Condition");
 
-        addTrialToMeSHLinks(model, prop, query, p);
+        addTrialToMeSHLinks(model, meshModel,prop, query, p);
     }
 
-    private void addTrialInterventions(Model model, Properties prop) {
+    private void addTrialInterventions(Model model, Model meshModel, Properties prop) {
         String query = prop.getProperty("aact_browse_interventions");
         Property p = model.createProperty("Intervention");
 
-        addTrialToMeSHLinks(model, prop, query, p);
+        addTrialToMeSHLinks(model, meshModel, prop, query, p);
     }
 
-    private void addTrialToMeSHLinks(Model model, Properties prop, String query, Property p) {
+    private void addTrialToMeSHLinks(Model model, Model meshModel, Properties prop, String query, Property p) {
         try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
                 prop.getProperty("user"), prop.getProperty("password"));
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
@@ -187,13 +183,18 @@ public class App {
                 String trialId = resultSet.getString("nct_id");
                 String conditionMeSHTerm = resultSet.getString("mesh_term");
 
-                Resource r = model.getResource("https://clinicaltrials.gov/ct2/show/" + trialId);
+                Resource r = model.createResource("https://clinicaltrials.gov/ct2/show/" + trialId);
 
-                Literal literal = model.createLiteral(conditionMeSHTerm, "en");
+                Literal literal = meshModel.createLiteral(conditionMeSHTerm, "en");
                 Selector selector = new SimpleSelector(null, null, literal);
-                StmtIterator si = model.listStatements(selector);
+                StmtIterator si = meshModel.listStatements(selector);
 
-                if (si.hasNext()) model.add(r, p, si.nextStatement().getSubject());
+                if (si.hasNext()) {
+                    Statement s =  si.nextStatement();
+
+                    model.add(s);
+                    model.add(r, p, s.getSubject());
+                }
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());

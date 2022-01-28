@@ -13,23 +13,34 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - PubMed Article ids
 - Genotype(from Human Genome),
 
+## Getting Started
+
+- Compile
+  `mvn clean package assembly:single`
+- Run
+  `java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar`
+
 ## Release notes 
 - v0.3
+  - Adding links between trials and interventions in addition to trials and conditions.
+  - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF. For example :
+
+    `<https://clinicaltrials.gov/ct2/show/NCT00093782> <Condition> <http://id.nlm.nih.gov/mesh/2022/T000687> .
+    <https://clinicaltrials.gov/ct2/show/NCT00093782> <Intervention> <http://id.nlm.nih.gov/mesh/2022/T538652> .`
+  
+  - All global trial's - 756,169 - are added to RDF. For example :
+
+  `<https://clinicaltrials.gov/ct2/show/NCT00172328> <TrialId> "NCT00172328" .
+   <https://www.who.int/clinical-trials-registry-platform/CTRI/2021/05/033487> <TrialId> "CTRI/2021/05/033487" .`
+
+  - MeSH ids that are not linked to any trial are removed from the RDF. This reduces the graph size considerably.
   - Trial records are fetched from ICTRP's weekly + periodic full export and AACT's daily + monthly full snapshot. 
   - Trials are written down to a file (will be used later) : [vaidhyamegha_clinical_trials.csv](data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv)
 
     `$ wc -l vaidhyamegha_clinical_trials.csv
     755272 vaidhyamegha_clinical_trials.csv`
 
-  - Trial's nodes/edges are added to RDF. For example :
-
-    `<https://clinicaltrials.gov/ct2/show/NCT00172328> <TrialId> "NCT00172328" .`
-  
-  - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF. For exmaple :
-
-    `<https://clinicaltrials.gov/ct2/show/NCT00093782> <Condition> <http://id.nlm.nih.gov/mesh/2022/T000687> .
-    <https://clinicaltrials.gov/ct2/show/NCT00093782> <Intervention> <http://id.nlm.nih.gov/mesh/2022/T538652> .`
-  
+  - Download the RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.3).
   - v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. For example : 
   - Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
 
