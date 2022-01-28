@@ -18,7 +18,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - Compile
   `mvn clean package assembly:single`
 - Run
-  `java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar`
+  `java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
 ## Release notes 
 - v0.3
@@ -41,14 +41,15 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
     755272 vaidhyamegha_clinical_trials.csv`
 
   - Download the RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.3).
-  - v0.2 : Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. For example : 
+- v0.2
+  - Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. For example : 
   - Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
 
 ## Next steps 
 
 - List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
-- 
+- Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
 
 ## Specification
 

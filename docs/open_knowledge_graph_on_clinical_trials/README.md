@@ -37,7 +37,7 @@ Below is a brief specification
 - [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
 - [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
 - [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
-- 
+- Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
 # Tools
 
 - Apache Jena 

@@ -1,12 +1,10 @@
 package com.vaidhyamegha.data_cloud.kg;
 
 
-import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.impl.StatementImpl;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-
 import org.apache.jena.util.FileManager;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -14,9 +12,7 @@ import org.kohsuke.args4j.Option;
 
 import java.io.*;
 import java.sql.*;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
 
@@ -77,8 +73,8 @@ public class App {
 
                 FileManager.getInternal().addLocatorClassLoader(cl);
 
-//                Model vocab = ModelFactory.createDefaultModel();
-//                vocab.read(meshVocab, "TURTLE");
+                Model vocab = ModelFactory.createDefaultModel();
+                vocab.read(meshVocab, "TURTLE");
 
                 Model meshModel = ModelFactory.createDefaultModel();
                 meshModel.read(meshRDF, "NT");
