@@ -12,7 +12,6 @@ import org.kohsuke.args4j.Option;
 
 import java.io.*;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -99,28 +98,39 @@ public class App {
 
     private void addAllTrials(Model model, Properties prop) throws IOException {
         Property id = model.createProperty("TrialId");
-        String query = prop.getProperty("trial_ids");
+        String qTrialIds = prop.getProperty("trial_ids");
+        String qTrialArticles = prop.getProperty("select_trial_articles");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
-             Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
                      prop.getProperty("user"), prop.getProperty("password"));
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                PreparedStatement sTrialIds = conn.prepareStatement(qTrialIds);
+                PreparedStatement sTrialArticles = conn.prepareStatement(qTrialArticles); ) {
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = sTrialIds.executeQuery();
 
             while (resultSet.next()) {
                 String trialId = resultSet.getString("trial_id");
-                String uri = "https://clinicaltrials.gov/ct2/show/" + trialId;
-
-                if (!trialId.startsWith("NCT"))
-                    uri = "https://www.who.int/clinical-trials-registry-platform/" + trialId;
-
-                Resource r = model.createResource(uri);
+                Resource r = createResource(model, trialId);
 
                 model.add(r, id, trialId);
 
-                addTrialArticles(r, model, trialId, bw);
+                bw.write(trialId + "\n");
+
+                insertTrialArticles(r, model, trialId);
             }
+
+            resultSet = sTrialArticles.executeQuery();
+
+            while (resultSet.next()) {
+                String trial = resultSet.getString("trial");
+                Array pubmedArticles = resultSet.getArray("pubmed_articles");
+
+                Integer[] articles = (Integer[]) pubmedArticles.getArray();
+
+                addTrialArticles(model, trial, articles);
+            }
+
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
             throw new RuntimeException("Sorry, unable to connect to database");
@@ -130,17 +140,37 @@ public class App {
         }
     }
 
-    private void addTrialArticles(Resource r, Model model, String trialId, BufferedWriter bw) throws IOException {
-        Property prop = model.createProperty("Pubmed_Article");
+    private Resource createResource(Model model, String trialId) {
+        String uri = "https://clinicaltrials.gov/ct2/show/" + trialId;
 
-        bw.write(trialId + "\n");
+        if (!trialId.startsWith("NCT"))
+            uri = "https://www.who.int/clinical-trials-registry-platform/" + trialId;
+
+        return model.createResource(uri);
+    }
+
+    private void addTrialArticles(Model model, String trial, Integer[] articles) {
+        Property pPubMedArticle = model.createProperty("Pubmed_Article");
+        Property pArticleId = model.createProperty("ArticleId");
+
+        for (Integer a : articles) {
+            String uri = "https://pubmed.ncbi.nlm.nih.gov/" + a;
+            Resource rArticle = model.createResource(uri);
+
+            model.add(rArticle, pArticleId, String.valueOf(a));
+
+            Resource rTrial = createResource(model, trial);
+            
+            model.add(rTrial, pPubMedArticle, rArticle);
+        }
+    }
+
+    private void insertTrialArticles(Resource r, Model model, String trialId) {
 
         if (Math.random() > 0.999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
             List<Integer> articles = EntrezClient.getPubMedIds(trialId).getIdList();
 
             insertTrialPubMedArticles(trialId, articles);
-
-            for (Integer a : articles) model.add(r, prop, String.valueOf(a));
         }
     }
 

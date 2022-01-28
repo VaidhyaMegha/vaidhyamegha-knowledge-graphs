@@ -36,7 +36,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 ## Release notes 
 
 - v0.4
-  - List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
+  - List of trial ids to be incrementally bounced against Entrez API to generate the necessary incremental mappings b/w trials and PubMed articles
   ```
   $ grep "Pubmed_Article" data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt 
   <https://clinicaltrials.gov/ct2/show/NCT00400075> <Pubmed_Article> "25153486" .
@@ -73,7 +73,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
 - Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
 - Build SparQL + GraphQL version of API to allow direct querying of the graph. Provide some reasonable examples that are harder in SQL.
-- 
+- Snowmed CT, ICD 10.
 
 ## Specification
 
