@@ -38,6 +38,12 @@ Below is a brief specification
 - [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
 - [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
 - Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
+- Invoke Entrez API using Spring [webclient](https://www.baeldung.com/spring-webclient-resttemplate)
+  - Handling [XML response](https://stackoverflow.com/questions/68209076/spring-resttemplate-works-for-string-but-not-for-my-class)
+- JAXB [impl](https://stackoverflow.com/a/61283181/294552) in Java 11
+- JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
+- Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
+
 # Tools
 
 - Apache Jena 
