@@ -20,7 +20,17 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - Run
   `java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
+## Features as on current release - 0.4
+
+- Graph includes trials across the globe from nearly 20 clinical trial registries. Data is sourced from WHO's ICTRP and clinicaltrials.gov
+- Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
+- Links from trial to PubMed articles are added. PubMed's expert curate this information for each article.
+
+
 ## Release notes 
+
+- v0.4
+  - List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
 - v0.3
   - Adding links between trials and interventions in addition to trials and conditions.
   - conditions and interventions are fetched from database (instead of files). Corresponding edges b/w trials and conditions, trials and interventions are added to RDF. For example :
@@ -47,7 +57,6 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Next steps 
 
-- List of trial ids to be incrementally bounced against Entrez API from an AWS server to generate the necessary incremental mappings b/w trials and PubMed articles
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
 - Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
 
