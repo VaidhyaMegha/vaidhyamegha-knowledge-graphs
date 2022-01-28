@@ -33,7 +33,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   `<https://clinicaltrials.gov/ct2/show/NCT00172328> <TrialId> "NCT00172328" .
    <https://www.who.int/clinical-trials-registry-platform/CTRI/2021/05/033487> <TrialId> "CTRI/2021/05/033487" .`
 
-  - MeSH ids that are not linked to any trial are removed from the RDF. This reduces the graph size considerably.
+  - Starting with a fresh model for final RDF. MeSH ids that are not linked to any trial not considered. This reduces the graph size considerably.
   - Trial records are fetched from ICTRP's weekly + periodic full export and AACT's daily + monthly full snapshot. 
   - Trials are written down to a file (will be used later) : [vaidhyamegha_clinical_trials.csv](data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv)
 
