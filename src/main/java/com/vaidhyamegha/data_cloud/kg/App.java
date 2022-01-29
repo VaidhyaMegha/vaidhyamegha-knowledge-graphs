@@ -172,7 +172,7 @@ public class App {
     }
 
     private void insertTrialArticles(String trialId) {
-        if (Math.random() > 0.999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
+        if (Math.random() > 0.99999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
             List<Integer> articles = EntrezClient.getPubMedIds(trialId).getIdList();
 
             insertTrialPubMedArticles(trialId, articles);

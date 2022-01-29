@@ -8,7 +8,6 @@ import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 public class EntrezClient {
@@ -35,11 +34,5 @@ public class EntrezClient {
                 .retrieve()
                 .bodyToMono(ESearchResult.class)
                 .block();
-    }
-
-    public static void main(String[] args){
-        ESearchResult r = getPubMedIds("NCT01874691");
-        System.out.println(r);
-        System.out.println(Arrays.toString(r.getIdList().toArray()));
     }
 }

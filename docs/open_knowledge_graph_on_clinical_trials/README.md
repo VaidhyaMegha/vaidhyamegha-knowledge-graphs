@@ -48,7 +48,7 @@ Below is a brief specification
 - PostgreSQL date column with [default](https://stackoverflow.com/a/910937/294552) value
 - PostgreSQL [upsert](https://www.postgresqltutorial.com/postgresql-upsert/) statement
 - PostgreSQL - pg_restore - restore only one selected [schema](https://stackoverflow.com/a/970491/294552)
-
+- PostgreSQL - [Array functions](https://www.postgresql.org/docs/8.4/functions-array.html)
 
 # MeSH
 
