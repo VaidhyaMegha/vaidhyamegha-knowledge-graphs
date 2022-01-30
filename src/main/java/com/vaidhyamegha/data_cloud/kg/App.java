@@ -115,13 +115,13 @@ public class App {
             while (resultSet.next()) {
                 String article = resultSet.getString("article");
 
-                if(!article.equals(line))
-                    while((line = br.readLine())!= null) if (article.equals(line)) break;
+                if(line != null && !article.equals(line.split(PIPE)[0]))
+                    while((line = br.readLine())!= null) if (article.equals(line.split(PIPE)[0])) break;
 
                 if (line == null) break;
 
                 do {
-                    String[] ids = line.split("\\|");
+                    String[] ids = line.split(PIPE);
 
                     Resource r = createResource(model, ids[0], RESOURCE.PUBMED_ARTICLE);
                     Resource dui1 = createResource(model, ids[1], RESOURCE.MESH_DUI);
@@ -131,7 +131,7 @@ public class App {
                     model.add(r, pMeSHDUI, dui2);
 
                     line = br.readLine();
-                } while (article.equals(line));
+                } while (line!= null && article.equals(line.split(PIPE)[0]));
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
