@@ -1,20 +1,19 @@
 package com.vaidhyamegha.data_cloud.kg;
 
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.xml.Jaxb2XmlDecoder;
 import org.springframework.http.codec.xml.Jaxb2XmlEncoder;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
-
+/**
+ * Many implementations for Entrez clients are available in the open. Below reference allowed a succinct implementation .
+ * Reference : https://stackoverflow.com/questions/68209076/spring-resttemplate-works-for-string-but-not-for-my-class
+ * More references are in docs/open_knowledge_graph_on_clinical_trials/README.md.
+ */
 public class EntrezClient {
     public static ESearchResult getPubMedIds(String trialId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
-
         WebClient wb = WebClient.builder()
                 .defaultHeaders(header -> {
                     header.setContentType(MediaType.APPLICATION_XML);
