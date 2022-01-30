@@ -49,6 +49,12 @@ Below is a brief specification
 - PostgreSQL [upsert](https://www.postgresqltutorial.com/postgresql-upsert/) statement
 - PostgreSQL - pg_restore - restore only one selected [schema](https://stackoverflow.com/a/970491/294552)
 - PostgreSQL - [Array functions](https://www.postgresql.org/docs/8.4/functions-array.html)
+- [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
+- Execute PostgreSQL using psql [non-interactively](https://stackoverflow.com/a/6405296/294552)
+- Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
+- Save psql inline query output to a [file](https://stackoverflow.com/a/11870348/294552)
+- In PostgreSQL formulate a query to get [all items](https://stackoverflow.com/a/34592639/294552) in an array column
+- Prevent grep from exiting when match is [not](https://unix.stackexchange.com/a/330662/47615)  found
 
 # MeSH
 

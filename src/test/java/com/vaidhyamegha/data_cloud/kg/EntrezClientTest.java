@@ -20,9 +20,9 @@ public class EntrezClientTest extends TestCase {
     }
 
     public void testTestGetPubMedIds() {
-
         ESearchResult r = EntrezClient.getPubMedIds("NCT01874691");
         System.out.println(r);
         System.out.println(Arrays.toString(r.getIdList().toArray()));
+        assertEquals(r.getIdList().toArray().length, 9);
     }
 }

@@ -33,6 +33,9 @@ public class App {
     @Option(name = "-v", aliases = "--mesh-vocab-rdf", usage = "Path to the downloaded MeSH Vocabulary Turtle file.", required = false)
     private String meshVocab = "data/open_knowledge_graph_on_clinical_trials/vocabulary_1.0.0.ttl";
 
+    @Option(name = "-co", aliases = "--mrcoc-sorted-file", usage = "Path to sorted MRCOC detailed co occurrence file for selected fields.", required = false)
+    private String mrcoc = "data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021_selected_fields_sorted.txt";
+
     @Option(name = "-m", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
     private String meshRDF = "data/open_knowledge_graph_on_clinical_trials/mesh2022.nt";
 
@@ -69,7 +72,7 @@ public class App {
 
                 Model model = ModelFactory.createDefaultModel();
 
-                addAllTrials(model, prop);
+                addAllTrials(model);
 
                 FileManager.getInternal().addLocatorClassLoader(cl);
 
@@ -79,12 +82,13 @@ public class App {
                 Model meshModel = ModelFactory.createDefaultModel();
                 meshModel.read(meshRDF, "NT");
 
-                addTrialConditions(model, meshModel, prop);
-                addTrialInterventions(model, meshModel, prop);
+                addTrialConditions(model, meshModel);
+                addTrialInterventions(model, meshModel);
 
+                addMeSHCoOccurrences(model, meshModel);
                 RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
             } else {
-                throw new UnsupportedOperationException("Query mode is not yet supported");
+                throw new UnsupportedOperationException("Non-build modes are not yet supported");
             }
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
@@ -96,7 +100,49 @@ public class App {
         }
     }
 
-    private void addAllTrials(Model model, Properties prop) throws IOException {
+    private void addMeSHCoOccurrences(Model model, Model meshModel) { //TODO: we will use mesHModel more appropriately soon to pick the RDF node directly from there.
+        Property pMeSHDUI = model.createProperty("MeSH_DUI");
+        String qAllArticles = prop.getProperty("all_articles");
+        String line = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(mrcoc));
+             Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                     prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement sAllArticles = conn.prepareStatement(qAllArticles); ) {
+
+            ResultSet resultSet = sAllArticles.executeQuery();
+
+            while (resultSet.next()) {
+                String article = resultSet.getString("article");
+
+                if(!article.equals(line))
+                    while((line = br.readLine())!= null) if (article.equals(line)) break;
+
+                if (line == null) break;
+
+                do {
+                    String[] ids = line.split("\\|");
+
+                    Resource r = createResource(model, ids[0], RESOURCE.PUBMED_ARTICLE);
+                    Resource dui1 = createResource(model, ids[1], RESOURCE.MESH_DUI);
+                    Resource dui2 = createResource(model, ids[2], RESOURCE.MESH_DUI);
+
+                    model.add(r, pMeSHDUI, dui1);
+                    model.add(r, pMeSHDUI, dui2);
+
+                    line = br.readLine();
+                } while (article.equals(line));
+            }
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Sorry, unable to connect to database");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Sorry, couldn't read MeSH co-occurrence links");
+        }
+    }
+
+    private void addAllTrials(Model model) {
         Property pTrialId = model.createProperty("TrialId");
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
@@ -151,6 +197,9 @@ public class App {
             case PUBMED_ARTICLE:
                 uri = "https://pubmed.ncbi.nlm.nih.gov/" + rId;
                 return model.createResource(uri);
+            case MESH_DUI:
+                uri = "https://meshb.nlm.nih.gov/record/ui?ui=" + rId;
+                return model.createResource(uri);
             default:
                 throw new RuntimeException("Unsupported resource type " + rType);
         }
@@ -196,21 +245,21 @@ public class App {
         }
     }
 
-    private void addTrialConditions(Model model, Model meshModel, Properties prop) {
+    private void addTrialConditions(Model model, Model meshModel) {
         String query = prop.getProperty("aact_browse_conditions");
         Property p = model.createProperty("Condition");
 
-        addTrialToMeSHLinks(model, meshModel, prop, query, p);
+        addTrialToMeSHLinks(model, meshModel, query, p);
     }
 
-    private void addTrialInterventions(Model model, Model meshModel, Properties prop) {
+    private void addTrialInterventions(Model model, Model meshModel) {
         String query = prop.getProperty("aact_browse_interventions");
         Property p = model.createProperty("Intervention");
 
-        addTrialToMeSHLinks(model, meshModel, prop, query, p);
+        addTrialToMeSHLinks(model, meshModel, query, p);
     }
 
-    private void addTrialToMeSHLinks(Model model, Model meshModel, Properties prop, String query, Property p) {
+    private void addTrialToMeSHLinks(Model model, Model meshModel, String query, Property p) {
         try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
                 prop.getProperty("user"), prop.getProperty("password"));
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
