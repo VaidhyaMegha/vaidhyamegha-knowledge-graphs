@@ -49,6 +49,9 @@ Below is a brief specification
 - JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
 - Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
 - [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
+- Other older relevant links on Java and Entrez
+  - [download-pubmed-abstracts-in-java](https://stackoverflow.com/questions/5410151/download-pubmed-abstracts-in-java)
+  - Github repo : [pubmed_ws_client](https://github.com/renaud/pubmed_ws_client)
 
 ## Linux commands
 - Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
