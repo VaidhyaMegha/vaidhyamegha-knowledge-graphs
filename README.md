@@ -37,6 +37,11 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 - v0.5
   - Adding MRCOC to the graph for the selected articles linked to clinical trials.
+  ```
+  <https://pubmed.ncbi.nlm.nih.gov/20926522> <MeSH_DUI> <https://meshb.nlm.nih.gov/record/ui?ui=D064451> .
+  <https://pubmed.ncbi.nlm.nih.gov/17404119> <MeSH_DUI> <https://meshb.nlm.nih.gov/record/ui?ui=D008297> .
+  <https://pubmed.ncbi.nlm.nih.gov/17404119> <MeSH_DUI> <https://meshb.nlm.nih.gov/record/ui?ui=D006801> .
+  ```
 - v0.4
   - List of trial ids to be incrementally bounced against Entrez API to generate the necessary incremental mappings b/w trials and PubMed articles
   ```
