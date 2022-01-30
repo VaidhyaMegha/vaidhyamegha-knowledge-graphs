@@ -75,8 +75,9 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Next steps 
 
-- Symptoms - Diseases links using all PubMed Articles from MRCOC
 - Symptoms - Genotype links using Phegeni
+- Host Knowledge graph on Ne04j's cloud service, [Aura DB](https://neo4j.com/cloud/aura). 
+- Use Neo4j's [GraphQL](https://neo4j.com/developer/graphql/) API from Postman to demonstrate sample queries on clinical trials.
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
 - Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
 - Build SparQL + GraphQL version of API to allow direct querying of the graph. Provide some reasonable examples that are harder in SQL.

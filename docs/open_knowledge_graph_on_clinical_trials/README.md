@@ -33,37 +33,59 @@ Below is a brief specification
 
 # References
 
+## Apache Jena
 - [Read](https://jena.apache.org/documentation/io/rdf-input.html) RDF files
 - [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
 - [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
 - [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
+- index RDF files
+- [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
+
+## Java
 - Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
 - Invoke Entrez API using Spring [webclient](https://www.baeldung.com/spring-webclient-resttemplate)
   - Handling [XML response](https://stackoverflow.com/questions/68209076/spring-resttemplate-works-for-string-but-not-for-my-class)
 - JAXB [impl](https://stackoverflow.com/a/61283181/294552) in Java 11
 - JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
 - Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
+- [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
+
+## Linux commands
+- Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
+- Prevent grep from exiting when match is [not](https://unix.stackexchange.com/a/330662/47615) found
+
+## PostgreSQL
 - PostgreSQL [array](https://www.postgresql.org/docs/9.1/arrays.html) columns
   - JDBC [insert](https://tonaconsulting.wordpress.com/2013/05/28/postgres-and-multi-dimensions-arrays-in-jdbc/) into array columns
 - PostgreSQL date column with [default](https://stackoverflow.com/a/910937/294552) value
 - PostgreSQL [upsert](https://www.postgresqltutorial.com/postgresql-upsert/) statement
 - PostgreSQL - pg_restore - restore only one selected [schema](https://stackoverflow.com/a/970491/294552)
 - PostgreSQL - [Array functions](https://www.postgresql.org/docs/8.4/functions-array.html)
-- [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
-- Execute PostgreSQL using psql [non-interactively](https://stackoverflow.com/a/6405296/294552)
-- Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
+- Execute query on PostgreSQL using psql [non-interactively](https://stackoverflow.com/a/6405296/294552)
 - Save psql inline query output to a [file](https://stackoverflow.com/a/11870348/294552)
 - In PostgreSQL formulate a query to get [all items](https://stackoverflow.com/a/34592639/294552) in an array column
-- Prevent grep from exiting when match is [not](https://unix.stackexchange.com/a/330662/47615)  found
 
-# MeSH
+## Postman
+- [Tutorial](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/graphql/) for using GraphQL with Postman
 
+## Neo4j
+- Supports [GraphQL](https://neo4j.com/developer/graphql/) API.
+- [Aura DB](https://neo4j.com/cloud/aura) is Neo4j's cloud database service. 
+
+### Possibly older threads
+- GraphQL [queries](https://community.neo4j.com/t/grandstack-starter-using-postman-api-to-get-data-from-graphql/999/2) from Postman to neo4j.
+- Discussion on SparQL for [neo4j](https://community.neo4j.com/t/sparql-for-neo4j/19583/5). 
+  - Suggests it's feasible to execute SparQL 'get' query from Jena to Neo4j using n10s plugin. 
+  
+## Superset
+
+### Integration to data sources
+- GraphQL's [integration](https://github.com/apache/superset/issues/5389#issuecomment-510284311) in to Apache Superset.
+  - Subsequent [fork](https://github.com/graphadvantage/incubator-superset-gql-neo4j) with commits from the above commenter - graphadvantage - to address this need.
+
+### Superset's API
+- REST [API](https://preset.io/blog/2020-10-01-superset-api/) of Superset with a comment on GraphQL.
+
+## MeSH
 - [Tree](https://meshb.nlm.nih.gov/treeView) view
 - [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
-
-# Tools
-
-- Apache Jena 
-  - index RDF files
-  - [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
-
