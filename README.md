@@ -24,7 +24,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
   ```
 
-## Features as on current release - 0.5
+## Features as on current release - 0.6
 
 - **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles, to genes. Also discover relationships b/w various medical topics through co-occurrences in articles.
 - Graph includes trials across the globe from nearly 20 clinical trial registries. Data is sourced from WHO's ICTRP and clinicaltrials.gov
