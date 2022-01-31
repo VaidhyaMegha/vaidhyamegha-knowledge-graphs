@@ -1,6 +1,6 @@
 target/
 *.txt
-
+*.pm
 # Compiled class file
 *.class
 

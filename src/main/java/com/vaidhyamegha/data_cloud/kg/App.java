@@ -24,11 +24,15 @@ import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
 public class App {
 
     private static final String PIPE = "\\|";
+    private static final String TAB = "\\t";
     @Option(name = "-o", aliases = "--output-rdf", usage = "Path to the final RDF file", required = false)
     private File out = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt");
 
     @Option(name = "-l", aliases = "--output-trials-list", usage = "Path to the list of trial ids file", required = false)
     private File trials = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv");
+
+    @Option(name = "-g", aliases = "--phegeni", usage = "Path to phegeni file", required = false)
+    private File phegeni = new File("data/open_knowledge_graph_on_clinical_trials/PheGenI_Association_full.tab");
 
     @Option(name = "-v", aliases = "--mesh-vocab-rdf", usage = "Path to the downloaded MeSH Vocabulary Turtle file.", required = false)
     private String meshVocab = "data/open_knowledge_graph_on_clinical_trials/vocabulary_1.0.0.ttl";
@@ -86,6 +90,8 @@ public class App {
                 addTrialInterventions(model, meshModel);
 
                 addMeSHCoOccurrences(model, meshModel);
+
+                addPhenotypeGenotypes(model, meshModel);
                 RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
             } else {
                 throw new UnsupportedOperationException("Non-build modes are not yet supported");
@@ -98,6 +104,47 @@ public class App {
 
             System.err.println("  Example: java App" + parser.printExample(ALL));
         }
+    }
+
+    private void addPhenotypeGenotypes(Model model, Model meshModel) {
+        String line = "";
+        Property pGene = model.createProperty("Gene");
+        Property pGeneID = model.createProperty("GeneID");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(phegeni));) {
+
+            while((line = br.readLine())!= null) {
+                String trait = line.split(TAB)[1];
+                String geneId1 = line.split(TAB)[5];
+                String geneId2 = line.split(TAB)[7];
+
+                StmtIterator si = findStatements(meshModel, trait);
+
+                if (si.hasNext()) {
+                    Statement s = si.nextStatement();
+                    Resource rId1 = RESOURCE.GENE_ID.createResource(model, geneId1);
+                    Resource rId2 = RESOURCE.GENE_ID.createResource(model, geneId2);
+
+                    model.add(s);
+
+                    model.add(rId1, pGeneID, geneId1);
+                    model.add(rId1, pGene, s.getSubject());
+
+                    model.add(rId2, pGeneID, geneId2);
+                    model.add(rId2, pGene, s.getSubject());
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Sorry, couldn't read MeSH co-occurrence links");
+        }
+    }
+
+    private StmtIterator findStatements(Model meshModel, String literalValue) {
+        Literal literal = meshModel.createLiteral(literalValue, "en");
+        Selector selector = new SimpleSelector(null, null, literal);
+        return meshModel.listStatements(selector);
     }
 
     private void addMeSHCoOccurrences(Model model, Model meshModel) { //TODO: we will use mesHModel more appropriately soon to pick the RDF node directly from there.
@@ -123,9 +170,9 @@ public class App {
                 do {
                     String[] ids = line.split(PIPE);
 
-                    Resource r = createResource(model, ids[0], RESOURCE.PUBMED_ARTICLE);
-                    Resource dui1 = createResource(model, ids[1], RESOURCE.MESH_DUI);
-                    Resource dui2 = createResource(model, ids[2], RESOURCE.MESH_DUI);
+                    Resource r = RESOURCE.PUBMED_ARTICLE.createResource(model, ids[0]);
+                    Resource dui1 = RESOURCE.MESH_DUI.createResource(model, ids[1]);
+                    Resource dui2 = RESOURCE.MESH_DUI.createResource(model, ids[2]);
 
                     model.add(r, pMeSHDUI, dui1);
                     model.add(r, pMeSHDUI, dui2);
@@ -157,7 +204,7 @@ public class App {
 
             while (resultSet.next()) {
                 String trialId = resultSet.getString("trial_id");
-                Resource r = createResource(model, trialId, RESOURCE.TRIAL);
+                Resource r = RESOURCE.TRIAL.createResource(model, trialId);
 
                 model.add(r, pTrialId, trialId);
 
@@ -185,43 +232,23 @@ public class App {
         }
     }
 
-    private Resource createResource(Model model, String rId, RESOURCE rType) {
-        switch (rType) {
-            case TRIAL:
-                String uri = "https://clinicaltrials.gov/ct2/show/" + rId;
-
-                if (!rId.startsWith("NCT"))
-                    uri = "https://www.who.int/clinical-trials-registry-platform/" + rId;
-
-                return model.createResource(uri);
-            case PUBMED_ARTICLE:
-                uri = "https://pubmed.ncbi.nlm.nih.gov/" + rId;
-                return model.createResource(uri);
-            case MESH_DUI:
-                uri = "https://meshb.nlm.nih.gov/record/ui?ui=" + rId;
-                return model.createResource(uri);
-            default:
-                throw new RuntimeException("Unsupported resource type " + rType);
-        }
-    }
-
     private void addTrialArticles(Model model, String trial, Integer[] articles) {
         Property pPubMedArticle = model.createProperty("Pubmed_Article");
         Property pArticleId = model.createProperty("ArticleId");
 
         for (Integer a : articles) {
-            Resource rArticle = createResource(model,String.valueOf(a), RESOURCE.PUBMED_ARTICLE);
+            Resource rArticle = RESOURCE.PUBMED_ARTICLE.createResource(model,String.valueOf(a));
 
             model.add(rArticle, pArticleId, String.valueOf(a));
 
-            Resource rTrial = createResource(model, trial, RESOURCE.TRIAL);
+            Resource rTrial = RESOURCE.TRIAL.createResource(model, trial);
 
             model.add(rTrial, pPubMedArticle, rArticle);
         }
     }
 
     private void insertTrialArticles(String trialId) {
-        if (Math.random() > 0.99999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
+        if (Math.random() > 0.9999999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
             List<Integer> articles = EntrezClient.getPubMedIds(trialId).getIdList();
 
             insertTrialPubMedArticles(trialId, articles);
@@ -270,11 +297,9 @@ public class App {
                 String trialId = resultSet.getString("nct_id");
                 String conditionMeSHTerm = resultSet.getString("mesh_term");
 
-                Resource r = createResource(model, trialId, RESOURCE.TRIAL);
+                Resource r = RESOURCE.TRIAL.createResource(model, trialId);
 
-                Literal literal = meshModel.createLiteral(conditionMeSHTerm, "en");
-                Selector selector = new SimpleSelector(null, null, literal);
-                StmtIterator si = meshModel.listStatements(selector);
+                StmtIterator si = findStatements(meshModel, conditionMeSHTerm);
 
                 if (si.hasNext()) {
                     Statement s = si.nextStatement();

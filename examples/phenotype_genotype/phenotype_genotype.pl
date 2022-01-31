@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 open(OUT, ">/projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/phegeni.tsv");
-open(FILE1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/PheGenI_Association_full.tab");
+open(FILE1, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/open_knowledge_graph_on_clinical_trials/PheGenI_Association_full.tab");
 open(FILE2, "</projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/phenotype_genotype/symptoms.tsv");
 
 my (@array1) = <FILE1>;

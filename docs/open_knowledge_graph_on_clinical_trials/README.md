@@ -92,3 +92,8 @@ Below is a brief specification
 ## MeSH
 - [Tree](https://meshb.nlm.nih.gov/treeView) view
 - [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
+
+## PheGenI
+- PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
+- Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
+
