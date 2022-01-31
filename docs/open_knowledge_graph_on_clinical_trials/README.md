@@ -94,6 +94,7 @@ Below is a brief specification
 - [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
 
 ## PheGenI
+- What [is](https://www.genome.gov/27543987/2011-news-feature-new-web-portal-expands-view-of-genetic-association-data-for-researchers) PheGenI
 - PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
 - Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
 

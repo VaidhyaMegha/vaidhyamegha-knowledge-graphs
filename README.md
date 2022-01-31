@@ -26,15 +26,26 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Features as on current release - 0.5
 
-- **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles. Also discover relationships b/w various medical topics through co-occurrences in articles.
+- **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles, to genes. Also discover relationships b/w various medical topics through co-occurrences in articles.
 - Graph includes trials across the globe from nearly 20 clinical trial registries. Data is sourced from WHO's ICTRP and clinicaltrials.gov
 - Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
 - Links from trial to PubMed articles are added. PubMed's experts curate this metadata information for each article.
-- 4 co-existing bi-partite graphs b/w trial--> condition, trial--> intervention, trial --> articles, article --> MeSH DUIs together comprise this knowledge graph.
+- Added MRCOC to the graph for the selected articles linked to clinical trials.
+- 5 co-existing bi-partite graphs b/w trial--> condition, trial--> intervention, trial --> articles, article --> MeSH DUIs, gene id --> MeSH DUIs together comprise this knowledge graph.
 
 
 ## Release notes 
 
+- v0.6
+  - Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
+  ```
+  <https://www.ncbi.nlm.nih.gov/gene/10014> <Gene> <http://id.nlm.nih.gov/mesh/2022/T046007> .
+  <https://www.ncbi.nlm.nih.gov/gene/10014> <GeneID> "10014" .
+  <https://www.ncbi.nlm.nih.gov/gene/6923> <Gene> <http://id.nlm.nih.gov/mesh/2022/T032324> .
+  <https://www.ncbi.nlm.nih.gov/gene/6923> <GeneID> "6923" .
+  <https://www.ncbi.nlm.nih.gov/gene/3198> <Gene> <http://id.nlm.nih.gov/mesh/2022/T032324> .
+  <https://www.ncbi.nlm.nih.gov/gene/3198> <GeneID> "3198" .
+  ```
 - v0.5
   - Adding MRCOC to the graph for the selected articles linked to clinical trials.
   ```
