@@ -20,13 +20,52 @@
 
 ## ICTRP database download/restore steps
 
-- ICTRP will update clinical trials data weekly.
-- Download weekly data from [here](https://worldhealthorg-my.sharepoint.com/personal/karamg_who_int/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fkaramg%5Fwho%5Fint%2FDocuments%2FICTRP%20weekly%20updates) on local machine.
-- Unzip the downloaded file and you should have .csv file.
-- Connect to database on Pstgre server.
-- Import the .csv file from local machine to PostgreSQL using following command :
 
-`\COPY "table_name" FROM '/file_location/file_name.csv' DELIMITER ',' CSV QUOTE AS '"' HEADER;`
+
+### Source Data
+ - [URL](https://worldhealthorg-my.sharepoint.com/personal/karamg_who_int/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fkaramg%5Fwho%5Fint%2FDocuments%2FICTRP%20weekly%20updates)
+
+    ![Ictrp_download_page](/home/reddaiah/Bala/Projects/ictrp/weekly_steps/ictrp_download_list.png")
+
+ - Select weekly data and click download.
+ - Unzip the downloaded zip file.
+ 
+    ![Files after unzip](/home/reddaiah/Bala/Projects/ictrp/weekly_steps/unzip_file.png")
+
+### Import to Database
+
+- Connect to PostgresSQL server:
+
+    `psql -U "user_name" -p "ort_numberr" -h "host" "database_name"`
+
+- Chek for row count :
+
+    `SELECT COUNT(*) FROM ictrp.ictrp_full_weekly_data;`
+
+- Copy unzipped .csv file to ictrp_full_weekly_data, and ictrp_weekly-data tables of ictrp schema and check whether row count increased or not changed :
+
+
+    `\COPY ictrp."ictrp_weekly_data" FROM '/home/reddaiah/Bala/Projects/ictrp/Weekly/ICTRPWeek24January2022.csv' DELIMITER ',' CSV QUOTE AS '"' HEADER;`
+
+    `\COPY ictrp."ictrp_full_weekly_data" FROM '/home/reddaiah/Bala/Projects/ictrp/Weekly/ICTRPWeek24January2022.csv' DELIMITER ',' CSV QUOTE AS '"' HEADER;`
+
+    `SELECT COUNT(*) FROM ictrp.ictrp_full_weekly_data;`
+
+### Cleaning and Transformation of data
+
+- Run `data_transforamtion.sql` script in dbeaver IDE, which perform following actions
+    - Delete duplicate records 
+    - Drop and create new ictrp_rpt table 
+    - Data cleaning by removing un wanted symbols like ""  , : , <br> from key columns
+    - Adding New Columns and updating data to new columns
+    - Date format standardization
+
+
+- Run `CTRI_cond_update.sql` script in dbeaver IDE, which update 'conditions_std' of CTRI Registry
+
+### Generation of graphs, diagrams and tables 
+- Connect to jhub server
+- Run ictrp.ipynb
 
 
 ## MRCOC
