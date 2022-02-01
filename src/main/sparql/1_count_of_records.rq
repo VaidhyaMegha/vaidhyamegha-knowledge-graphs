@@ -1,0 +1,2 @@
+SELECT (count(*) as ?count)
+where { ?s ?p ?o}

@@ -40,6 +40,7 @@ Below is a brief specification
 - [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
 - index RDF files
 - [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
+- count triples [query](https://stackoverflow.com/a/51289880/294552)
 
 ## Java
 - Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.

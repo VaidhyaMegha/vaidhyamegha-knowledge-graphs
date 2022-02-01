@@ -1,6 +1,7 @@
 package com.vaidhyamegha.data_cloud.kg;
 
 
+import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.riot.Lang;
@@ -11,7 +12,12 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,7 +32,7 @@ public class App {
     private static final String PIPE = "\\|";
     private static final String TAB = "\\t";
     @Option(name = "-o", aliases = "--output-rdf", usage = "Path to the final RDF file", required = false)
-    private File out = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt");
+    private String output = "data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt";
 
     @Option(name = "-l", aliases = "--output-trials-list", usage = "Path to the list of trial ids file", required = false)
     private File trials = new File("data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_clinical_trials.csv");
@@ -40,11 +46,14 @@ public class App {
     @Option(name = "-co", aliases = "--mrcoc-sorted-file", usage = "Path to sorted MRCOC detailed co occurrence file for selected fields.", required = false)
     private String mrcoc = "data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021_selected_fields_sorted.txt";
 
-    @Option(name = "-m", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
+    @Option(name = "-me", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
     private String meshRDF = "data/open_knowledge_graph_on_clinical_trials/mesh2022.nt";
 
-    @Option(name = "-b", aliases = "--mode", usage = "Build RDF or query pre-built RDF?", required = false)
+    @Option(name = "-m", aliases = "--mode", usage = "Build RDF or query pre-built RDF?", required = false)
     private MODE mode = MODE.BUILD;
+
+    @Option(name = "-q", aliases = "--query", usage = "Query file", required = false)
+    private String query = "src/main/sparql/1_count_of_records.rq";
 
     @Option(name = "-t", aliases = "--trial-id", usage = "Clinical trial's registered id.", required = false)
     private String trial;
@@ -68,17 +77,10 @@ public class App {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
+            Model model = initialize(args, parser);
+
             if (mode == MODE.BUILD) {
-                parser.parseArgument(args);
-
-                ClassLoader cl = App.class.getClassLoader();
-                prop = readProperties(cl);
-
-                Model model = ModelFactory.createDefaultModel();
-
                 addAllTrials(model);
-
-                FileManager.getInternal().addLocatorClassLoader(cl);
 
                 Model vocab = ModelFactory.createDefaultModel();
                 vocab.read(meshVocab, "TURTLE");
@@ -92,7 +94,24 @@ public class App {
                 addMeSHCoOccurrences(model, meshModel);
 
                 addPhenotypeGenotypes(model, meshModel);
-                RDFDataMgr.write(new FileOutputStream(out), model, Lang.NT);
+                RDFDataMgr.write(new FileOutputStream(output), model, Lang.NT);
+            } else if(mode == MODE.CLI) {
+                String q = Files.readString(Path.of(query));
+                model.read(output, "NT");
+                try ( QueryExecution qexec = QueryExecutionFactory.create(q, model) ) {
+                    org.apache.jena.query.ResultSet rs = qexec.execSelect() ;
+
+                    System.out.println("Results: ") ;
+                    System.out.println("-------- ") ;
+                    while (rs.hasNext()) {
+                        QuerySolution rb = rs.nextSolution() ;
+
+                        List<String> v = new ArrayList<>();
+                        rb.varNames().forEachRemaining(v::add);
+
+                        for (String s: v) System.out.println(rb.get(s));
+                    }
+                }
             } else {
                 throw new UnsupportedOperationException("Non-build modes are not yet supported");
             }
@@ -104,6 +123,20 @@ public class App {
 
             System.err.println("  Example: java App" + parser.printExample(ALL));
         }
+    }
+
+    private Model initialize(String[] args, CmdLineParser parser) throws CmdLineException {
+        parser.parseArgument(args);
+
+        ClassLoader cl = App.class.getClassLoader();
+        prop = readProperties(cl);
+
+        Model model = ModelFactory.createDefaultModel();
+        FileManager.getInternal().addLocatorClassLoader(cl);
+
+        System.out.println(Arrays.toString(args));
+        System.out.println(mode);
+        return model;
     }
 
     private void addPhenotypeGenotypes(Model model, Model meshModel) {
@@ -248,7 +281,8 @@ public class App {
     }
 
     private void insertTrialArticles(String trialId) {
-        if (Math.random() > 0.9999999) { // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
+        // constraining so that only a small number of Entrez API calls are made. TODO : Optimize this by checking if an id is already attempted before.
+        if (Math.random() > Double.parseDouble(prop.getProperty("ENTREZ_API_CALL_THRESHOLD"))) {
             List<Integer> articles = EntrezClient.getPubMedIds(trialId).getIdList();
 
             insertTrialPubMedArticles(trialId, articles);

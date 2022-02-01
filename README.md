@@ -17,13 +17,21 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 - Compile
   ```
-  mvn clean package assembly:single
+  mvn clean package assembly:single -DskipTests
   ```
-- Run
+- Run : To Build
   ```
   java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
   ```
-
+- Run : To Query
+  ```
+  vaidhyamegha@vaidhyamegha /projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs
+  $ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar -m cli -q src/main/sparql/1_count_of_records.rq
+  ...
+  Results:
+  -------- 
+  4766048^^http://www.w3.org/2001/XMLSchema#integer
+  ```
 ## Features as on current release - 0.6
 
 - **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles, to genes. Also discover relationships b/w various medical topics through co-occurrences in articles.
@@ -36,6 +44,35 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Release notes 
 
+- v0.7
+  - Enable SparQL queries
+  ```
+	$ cat src/main/sparql/1_count_of_records.rq 
+	SELECT (count(*) as ?count)
+	where { ?s ?p ?o}
+
+	$ sparql --data=data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt --query=src/main/sparql/1_count_of_records.rq
+	-----------
+	| count   |
+	===========
+	| 4766048 |
+	-----------
+
+	$ wc -l data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt 
+	4766048 data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt
+  ```
+- v0.6.1
+  - Externalize the Entrez API invocation threshold probability
+  - Patch for below issue
+  ```
+    $ sparql --data=data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt --query=src/main/sparql/example.rq
+    04:33:04 ERROR riot            :: [line: 1085476, col: 71] Bad character in IRI (Tab character): <https://www.who.int/clinical-trials-registry-platform/SLCTR/2020/014[tab]...>
+    Failed to load data
+
+    $ grep "SLCTR/2020/014" data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt 
+    <https://www.who.int/clinical-trials-registry-platform/SLCTR/2020/014	> <TrialId> "SLCTR/2020/014\t" .
+
+  ```
 - v0.6
   - Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
   ```
@@ -86,7 +123,6 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Next steps 
 
-- Symptoms - Genotype links using Phegeni
 - Host Knowledge graph on Ne04j's cloud service, [Aura DB](https://neo4j.com/cloud/aura). 
 - Use Neo4j's [GraphQL](https://neo4j.com/developer/graphql/) API from Postman to demonstrate sample queries on clinical trials.
 - Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm

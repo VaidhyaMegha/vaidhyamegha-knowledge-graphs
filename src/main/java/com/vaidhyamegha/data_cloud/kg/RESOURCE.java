@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.Resource;
 enum RESOURCE {TRIAL, PUBMED_ARTICLE, GENE_ID, MESH_DUI;
 
     Resource createResource(Model model, String rId) {
+    rId = rId.trim();
     switch (this) {
         case TRIAL:
             String uri = "https://clinicaltrials.gov/ct2/show/" + rId;
