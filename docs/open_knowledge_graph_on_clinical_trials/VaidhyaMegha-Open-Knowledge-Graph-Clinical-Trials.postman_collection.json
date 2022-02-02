@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "2bcf2e2d-fa4f-4b3a-98a9-488dd3687550",
+		"name": "VaidhyaMegha-Open-Knowledge-Graph-Clinical-Trials",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get trials",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/ntriples",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get articles",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/ntriples",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  article_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "introspection",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "{\n  trial_GET(limit: 30, offset: 1) {\n    _id\n    _type\n    label\n  }\n  article_GET(limit: 30, offset: 1) {\n    _id\n    _type\n    label\n  }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

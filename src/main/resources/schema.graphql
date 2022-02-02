@@ -1,7 +1,7 @@
 type __Context {
     name:           _@href(iri: "http://xmlns.com/foaf/0.1/name")
     label:          _@href(iri: "http://www.w3.org/2000/01/rdf-schema#label")
-    trial:          _@href(iri: "https://clinicaltrials.gov/ct2/show")
+    trial:          _@href(iri: "https://vaidhyamegha.com/open_kg/ct")
     mesh:           _@href(iri: "http://id.nlm.nih.gov/mesh/vocab#TreeNumber")
     article:        _@href(iri: "https://pubmed.ncbi.nlm.nih.gov")
 }

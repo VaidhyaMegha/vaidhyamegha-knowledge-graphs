@@ -30,30 +30,41 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
   ```
 
-- Run : To Query
+- Run : To Query using SparQL
   ```
-  vaidhyamegha@vaidhyamegha /projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs
   $ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar -m cli -q src/main/sparql/1_count_of_records.rq
   ...
   Results:
   -------- 
   4766048^^http://www.w3.org/2001/XMLSchema#integer
   ```
-  
-## Features as on current release - 0.6
 
-- **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles, to genes. Also discover relationships b/w various medical topics through co-occurrences in articles.
-- Graph includes trials across the globe from nearly 20 clinical trial registries. Data is sourced from WHO's ICTRP and clinicaltrials.gov
+- Run : To start GraphQL server using HyperGraphQL
+  ```
+  java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar --config src/main/resources/hql-config.json
+  ```
+## Features as on current release - 0.8
+
+**Summary** : Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl  
+
+**Feature list **:
+
+- Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
+- Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and clinicaltrials.gov
 - Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
 - Links from trial to PubMed articles are added. PubMed's experts curate this metadata information for each article.
 - Added MRCOC to the graph for the selected articles linked to clinical trials.
+- Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
+- Added SparQL query execution feature. Adding CLI mode. Adding a count SparQL query for demo.
 - 5 co-existing bi-partite graphs b/w trial--> condition, trial--> intervention, trial --> articles, article --> MeSH DUIs, gene id --> MeSH DUIs together comprise this knowledge graph.
+
+**Changes in this release** : Enabled GraphQL API on the knowledge graph 
 
 
 ## Release notes 
 
 - v0.8
-  - Enable GraphQL interface to the knowledge graph
+  - Enable GraphQL interface to the knowledge graph using [HyperGraphQL](https://www.hypergraphql.org/)
   ```
   java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar --config src/main/resources/hql-config.json
   ```
