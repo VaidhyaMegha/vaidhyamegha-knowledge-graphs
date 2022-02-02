@@ -16,16 +16,19 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 ## Getting Started
 
 - Compile
-	- Create a folder  'lib'. Download alg4.jar file from [here](https://algs4.cs.princeton.edu/code/algs4.jar) and place in 'lib' folder.
-	- Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in '/data/open_knowledge_graph_on_clinical_trials'  folder.
-	- Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file '/data/open_knowledge_graph_on_clinical_trials'  folder.
+	- Create a folder  'lib'. Download algs4.jar file from [here](https://algs4.cs.princeton.edu/code/algs4.jar) and place in 'lib' folder.
+	- Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in 'data/open_knowledge_graph_on_clinical_trials'  folder.
+	- Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file 'data/open_knowledge_graph_on_clinical_trials'  folder.
+
   ```
   mvn clean package assembly:single -DskipTests
   ```
-- Run : To Build
+
+- Run : To build RDF
   ```
   java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
   ```
+
 - Run : To Query
   ```
   vaidhyamegha@vaidhyamegha /projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs
@@ -35,6 +38,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   -------- 
   4766048^^http://www.w3.org/2001/XMLSchema#integer
   ```
+  
 ## Features as on current release - 0.6
 
 - **Summary** - One can move from any trial, across the globe, to medical vocabulary of diseases/interventions, to research articles, to genes. Also discover relationships b/w various medical topics through co-occurrences in articles.
