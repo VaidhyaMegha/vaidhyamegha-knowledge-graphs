@@ -15,22 +15,23 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 ## Getting Started
 
-- Compile
+- Pre-requisite steps for compilation
   - Create a folder  'lib'. Download algs4.jar file from [here](https://algs4.cs.princeton.edu/code/algs4.jar) and place in 'lib' folder.
   - Download hypergraphql jar file from [here](https://www.hypergraphql.org/resources/hypergraphql-3.0.1-exe.jar) and place in 'lib' folder.
   - Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file 'data/open_knowledge_graph_on_clinical_trials'  folder.
 
+- To compile and package
   ```
   mvn clean package assembly:single -DskipTests
   ```
 
-- Run : To build RDF
+- To build RDF
   ```
   java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
   ```
 
-- Run : To Query using SparQL
+- To query using SparQL
   ```
   $ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar -m cli -q src/main/sparql/1_count_of_records.rq
   ...
@@ -39,7 +40,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   4766048^^http://www.w3.org/2001/XMLSchema#integer
   ```
 
-- Run : To start GraphQL server using HyperGraphQL
+- To query using GraphQL (using HyperGraphQL)
   ```
   java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar --config src/main/resources/hql-config.json
   ```
