@@ -1,0 +1,2 @@
+SELECT *
+where {  ?p ?o}

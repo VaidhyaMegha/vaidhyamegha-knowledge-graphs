@@ -1,0 +1,58 @@
+type __Context {
+    Person:         _@href(iri: "http://dbpedia.org/ontology/Person")
+    Company:        _@href(iri: "http://dbpedia.org/ontology/Company")
+    City:           _@href(iri: "http://dbpedia.org/ontology/City")
+    Country:        _@href(iri: "http://dbpedia.org/ontology/Country")
+    name:           _@href(iri: "http://xmlns.com/foaf/0.1/name")
+    label:          _@href(iri: "http://www.w3.org/2000/01/rdf-schema#label")
+    birthPlace:     _@href(iri: "http://dbpedia.org/ontology/birthPlace")
+    birthDate:      _@href(iri: "http://dbpedia.org/ontology/birthDate")
+    locationCity:   _@href(iri: "http://dbpedia.org/ontology/locationCity")
+    owner:          _@href(iri: "http://dbpedia.org/ontology/owner")
+    country:        _@href(iri: "http://dbpedia.org/ontology/country")
+    leader:         _@href(iri: "http://dbpedia.org/ontology/leaderName")
+    country:        _@href(iri: "http://dbpedia.org/ontology/country")
+    capital:        _@href(iri: "http://dbpedia.org/ontology/capital")
+    trial:          _@href(iri: "https://clinicaltrials.gov/ct2/show")
+    mesh:           _@href(iri: "http://id.nlm.nih.gov/mesh/vocab#TreeNumber")
+    article:        _@href(iri: "https://pubmed.ncbi.nlm.nih.gov")
+}
+
+type Person @service(id:"dbpedia-sparql") {
+    name: String @service(id:"dbpedia-sparql")
+    label: [String] @service(id:"dbpedia-sparql")
+    birthPlace: City @service(id:"dbpedia-sparql")
+    birthDate: String @service(id:"dbpedia-sparql")
+}
+
+type trial @service(id:"vaidhyamegha-openkg-ct") {
+    label: [String] @service(id:"vaidhyamegha-openkg-ct")
+    Intervention: [String] @service(id:"vaidhyamegha-openkg-ct")
+    Condition: [String] @service(id:"vaidhyamegha-openkg-ct")
+}
+
+type article @service(id:"vaidhyamegha-openkg-ct") {
+    label: [String] @service(id:"vaidhyamegha-openkg-ct")
+}
+
+type mesh @service(id:"mesh") {
+    label: [String] @service(id:"mesh")
+}
+
+type Company @service(id:"dbpedia-sparql") {
+    name: [String] @service(id:"dbpedia-sparql")
+    label: [String] @service(id:"dbpedia-sparql")
+    locationCity: City @service(id:"dbpedia-sparql")
+    owner: [Person] @service(id:"dbpedia-sparql")
+}
+
+type City @service(id:"dbpedia-sparql") {
+    label: [String] @service(id:"dbpedia-sparql")
+    country: Country @service(id:"dbpedia-sparql")
+    leader: Person @service(id:"dbpedia-sparql")
+}
+
+type Country @service(id:"dbpedia-sparql") {
+    label: [String] @service(id:"dbpedia-sparql")
+    capital: City @service(id:"dbpedia-sparql")
+}

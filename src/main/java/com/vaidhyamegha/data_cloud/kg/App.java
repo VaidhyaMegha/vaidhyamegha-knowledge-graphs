@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import static com.vaidhyamegha.data_cloud.kg.Constants.*;
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
 
 /**
@@ -29,8 +30,6 @@ import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
  */
 public class App {
 
-    private static final String PIPE = "\\|";
-    private static final String TAB = "\\t";
     @Option(name = "-o", aliases = "--output-rdf", usage = "Path to the final RDF file", required = false)
     private String output = "data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt";
 
@@ -223,7 +222,9 @@ public class App {
     }
 
     private void addAllTrials(Model model) {
-        Property pTrialId = model.createProperty("http://www.w3.org/2000/01/rdf-schema#label");
+        Property pType = model.createProperty(RDF_SYNTAX_NS_TYPE);
+        Property pTrialId = model.createProperty(RDF_SCHEMA_LABEL);
+
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
 
@@ -239,6 +240,7 @@ public class App {
                 String trialId = resultSet.getString("trial_id");
                 Resource r = RESOURCE.TRIAL.createResource(model, trialId);
 
+                model.add(r, pType, OPEN_KG_CT_NS_TYPE);
                 model.add(r, pTrialId, trialId);
 
                 bw.write(trialId + "\n");
@@ -267,7 +269,7 @@ public class App {
 
     private void addTrialArticles(Model model, String trial, Integer[] articles) {
         Property pPubMedArticle = model.createProperty("Pubmed_Article");
-        Property pArticleId = model.createProperty("http://www.w3.org/2000/01/rdf-schema#label");
+        Property pArticleId = model.createProperty(RDF_SCHEMA_LABEL);
 
         for (Integer a : articles) {
             Resource rArticle = RESOURCE.PUBMED_ARTICLE.createResource(model,String.valueOf(a));

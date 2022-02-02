@@ -1,0 +1,31 @@
+{
+  "name": "dbpedia-sparql-hgql-demo",
+  "schema": "schema.graphql",
+  "server": {
+    "port": 8080,
+    "graphql": "/graphql",
+    "graphiql": "/graphiql"
+  },
+  "services": [
+    {
+      "id": "vaidhyamegha-openkg-ct",
+      "type": "LocalModelSPARQLService",
+      "filepath": "../projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/open_knowledge_graph_on_clinical_trials/vaidhyamegha_open_kg_clinical_trials.nt",
+      "filetype": "NTRIPLES"
+    },
+    {
+      "id": "mesh",
+      "type": "LocalModelSPARQLService",
+      "filepath": "../projects/VaidhyaMegha/vaidhyamegha-knowledge-graphs/data/open_knowledge_graph_on_clinical_trials/mesh2022.nt",
+      "filetype": "NTRIPLES"
+    },
+    {
+      "id": "dbpedia-sparql",
+      "type": "SPARQLEndpointService",
+      "url": "http://dbpedia.org/sparql/",
+      "graph": "http://dbpedia.org",
+      "user": "",
+      "password": ""
+    }
+  ]
+}
