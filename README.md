@@ -47,9 +47,18 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   - In a separate terminal execute GraphQL query using curl (alternatively use Postman)
     ```
     $ curl --location --request POST 'http://localhost:8080/graphql' --header 'Accept: application/ntriples' --header 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' --header 'Content-Type: application/json' --data-raw '{"query":"{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}","variables":{}}'
-  <https://clinicaltrials.gov/ct2/show/NCT03707951> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
-  <https://clinicaltrials.gov/ct2/show/NCT03707951> <http://www.w3.org/2000/01/rdf-schema#label> "NCT03707951"^^<http://www.w3.org/2001/XMLSchema#string> .
-  <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://clinicaltrials.gov/ct2/show/NCT03707951> .
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2007-006072-11-SE"^^<http://www.w3.org/2001/XMLSchema#string> .
+    <https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+    <https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02954757"^^<http://www.w3.org/2001/XMLSchema#string> .
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2014-005525-13-FI"^^<http://www.w3.org/2001/XMLSchema#string> .
+    <https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+    <https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02721914"^^<http://www.w3.org/2001/XMLSchema#string> .
+    ...
+    <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2016-002461-66-IT> .
+    <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/CTRI/2020/08/027368> .
+    <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
     ```
 ## Features as on current release - 0.8
 
