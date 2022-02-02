@@ -3,7 +3,9 @@ package com.vaidhyamegha.data_cloud.kg;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
-enum RESOURCE {TRIAL, PUBMED_ARTICLE, GENE_ID, MESH_DUI;
+import static com.vaidhyamegha.data_cloud.kg.Constants.OPEN_KG_CT_NS_TYPE;
+
+enum RESOURCE {TRIAL, PUBMED_ARTICLE, GENE_ID, MESH_DUI, NS_TYPE;
 
     Resource createResource(Model model, String rId) {
     rId = rId.trim();
@@ -23,6 +25,9 @@ enum RESOURCE {TRIAL, PUBMED_ARTICLE, GENE_ID, MESH_DUI;
             return model.createResource(uri);
         case GENE_ID:
             uri = "https://www.ncbi.nlm.nih.gov/gene/" + rId;
+            return model.createResource(uri);
+        case NS_TYPE:
+            uri = OPEN_KG_CT_NS_TYPE;
             return model.createResource(uri);
         default:
             throw new RuntimeException("Unsupported resource type " + this);

@@ -44,11 +44,18 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
   ```
   java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar --config src/main/resources/hql-config.json
   ```
+  - In a separate terminal execute GraphQL query using curl (alternatively use Postman)
+    ```
+    $ curl --location --request POST 'http://localhost:8080/graphql' --header 'Accept: application/ntriples' --header 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' --header 'Content-Type: application/json' --data-raw '{"query":"{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}","variables":{}}'
+  <https://clinicaltrials.gov/ct2/show/NCT03707951> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+  <https://clinicaltrials.gov/ct2/show/NCT03707951> <http://www.w3.org/2000/01/rdf-schema#label> "NCT03707951"^^<http://www.w3.org/2001/XMLSchema#string> .
+  <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://clinicaltrials.gov/ct2/show/NCT03707951> .
+    ```
 ## Features as on current release - 0.8
 
 **Summary** : Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl  
 
-**Feature list **:
+**Feature list** :
 
 - Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
 - Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and clinicaltrials.gov

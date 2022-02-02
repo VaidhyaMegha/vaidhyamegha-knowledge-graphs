@@ -227,6 +227,7 @@ public class App {
 
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
+        Resource nsTypeResource = RESOURCE.NS_TYPE.createResource(model, "");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
                 Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
@@ -240,7 +241,7 @@ public class App {
                 String trialId = resultSet.getString("trial_id");
                 Resource r = RESOURCE.TRIAL.createResource(model, trialId);
 
-                model.add(r, pType, OPEN_KG_CT_NS_TYPE);
+                model.add(r, pType, nsTypeResource);
                 model.add(r, pTrialId, trialId);
 
                 bw.write(trialId + "\n");
