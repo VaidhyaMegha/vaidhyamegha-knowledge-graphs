@@ -223,7 +223,7 @@ public class App {
     }
 
     private void addAllTrials(Model model) {
-        Property pTrialId = model.createProperty("TrialId");
+        Property pTrialId = model.createProperty("http://www.w3.org/2000/01/rdf-schema#label");
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
 
@@ -267,7 +267,7 @@ public class App {
 
     private void addTrialArticles(Model model, String trial, Integer[] articles) {
         Property pPubMedArticle = model.createProperty("Pubmed_Article");
-        Property pArticleId = model.createProperty("ArticleId");
+        Property pArticleId = model.createProperty("http://www.w3.org/2000/01/rdf-schema#label");
 
         for (Integer a : articles) {
             Resource rArticle = RESOURCE.PUBMED_ARTICLE.createResource(model,String.valueOf(a));

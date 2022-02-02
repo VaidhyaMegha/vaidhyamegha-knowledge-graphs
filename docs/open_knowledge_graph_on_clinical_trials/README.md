@@ -33,9 +33,20 @@ Below is a brief specification
 
 # References
 
+## Knowledge graph
+- Introduction to [knowledge graphs](https://arxiv.org/pdf/2003.02320.pdf) 
+
+## MeSH
+- [Tree](https://meshb.nlm.nih.gov/treeView) view
+- [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
+
+## PheGenI
+- What [is](https://www.genome.gov/27543987/2011-news-feature-new-web-portal-expands-view-of-genetic-association-data-for-researchers) PheGenI
+- PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
+- Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
+
 ## Apache Jena
 - [Download](https://jena.apache.org/download/index.cgi)
-- 
 - [Read](https://jena.apache.org/documentation/io/rdf-input.html) RDF files
 - [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
 - [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
@@ -44,6 +55,9 @@ Below is a brief specification
 - [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
 - count triples [query](https://stackoverflow.com/a/51289880/294552)
 - Execute SparQL query [programmatically](https://github.com/apache/jena/blob/main/jena-examples/src/main/java/arq/examples/ExProg1.java)
+
+## GraphQL
+- [Bridges between GraphQL and RDF](https://www.w3.org/Data/events/data-ws-2019/assets/position/Ruben%20Taelman.pdf)
 
 ## Java
 - Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
@@ -94,12 +108,4 @@ Below is a brief specification
 ### Superset's API
 - REST [API](https://preset.io/blog/2020-10-01-superset-api/) of Superset with a comment on GraphQL.
 
-## MeSH
-- [Tree](https://meshb.nlm.nih.gov/treeView) view
-- [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
-
-## PheGenI
-- What [is](https://www.genome.gov/27543987/2011-news-feature-new-web-portal-expands-view-of-genetic-association-data-for-researchers) PheGenI
-- PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
-- Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
 
