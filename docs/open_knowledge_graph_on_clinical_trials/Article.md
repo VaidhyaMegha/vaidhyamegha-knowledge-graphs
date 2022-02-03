@@ -7,19 +7,17 @@ author:
         - vaidhyamegha
       email: hi18sk@iiphh.org
       orcid: 0000-0002-8886-1846
-      equal_contributor: "yes"
       correspondence: "yes"
 institute:
   - iiphh:
       name: IIPH Hyderabad
-      address: 23 Science Street, Eureka, Mississippi, USA
-      phone: +1 (555) 423 1338
-      email: '{firstname}.{lastname}\@fosg.example.com'
+      address: Plot # 1, Rd Number 44, Masthan Nagar, Kavuri Hills, Jubilee Hills, Madhapur, Telangana 500033
+      phone: +91 040 4900 6000
   - vaidhyamegha:
       name: VaidhyaMegha Private Limited
-      address: 23 Science Street, Eureka, Mississippi, USA
-      phone: +1 (555) 423 1338
-      email: '{firstname}.{lastname}\@fosg.example.com'
+      address: Plot No. 112/A, H. No. 3-5-139/3/3/2,Shivanagar Colony Attapur,Hyderguda, Hyderabad,Telangana 500048.
+      phone: +91 9618986039
+      email: 'contact@vaidhyamegha.com'
 bibliography: bibliography.bib
 csl: apa.csl
 link-citations: true
@@ -31,7 +29,7 @@ project:
 
 # Abstract
 
-Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl
+Using any clinical trial id from across the globe find the associated diseases, interventions, research articles and genes. Also discover relationships between various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl
 
 # Introduction
 
@@ -61,12 +59,19 @@ Using any trial id from across the globe find the associated diseases/interventi
   - article --> MeSH DUIs
   - gene id --> MeSH DUIs
 
+# Trial to condition
+# Trial to intervention
+# Trial  to articles
+# Article  to MeSH DUIs
+# Gene id  to MeSH DUIs
+
 # Demonstration
 
 ## Querying knowledge graph using SparQL
 ```
-$ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
--m cli -q src/main/sparql/1_count_of_records.rq
+$ java -jar -Xms4096M -Xmx8144M \
+    target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
+    -m cli -q src/main/sparql/1_count_of_records.rq
 ...
 Results:
 -------- 
@@ -78,39 +83,59 @@ Results:
 ### Start server
 ```
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar \
---config src/main/resources/hql-config.json
+        --config src/main/resources/hql-config.json
 ```
 ### Start client
 
 In a separate terminal execute GraphQL query using curl (alternatively use Postman)
 
 ```
-$ curl --location --request POST 'http://localhost:8080/graphql' --header 'Accept: application/ntriples' --header \
-'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' --header 'Content-Type: application/json' \
---data-raw '{"query":"{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}","variables":{}}'
+$ curl --location --request POST 'http://localhost:8080/graphql' \
+    --header 'Accept: application/ntriples' \ 
+    --header 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' \
+    --header 'Content-Type: application/json' \
+    --data-raw \
+    '{"query": "{\n trial_GET(limit: 30, offset: 1) {\n label\n }\n \n}","variables":{}}'
 
-<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> \<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
-<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2007-006072-11-SE"^^<http://www.w3.org/2001/XMLSchema#string> .
-<https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
-<https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02954757"^^<http://www.w3.org/2001/XMLSchema#string> .
-<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
-<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2014-005525-13-FI"^^<http://www.w3.org/2001/XMLSchema#string> .
-<https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
-<https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02721914"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> 
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> 
+    <https://vaidhyamegha.com/open_kg/ct> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> 
+    <http://www.w3.org/2000/01/rdf-schema#label> 
+    "EUCTR2007-006072-11-SE"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://clinicaltrials.gov/ct2/show/NCT02954757> 
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> 
+    <https://vaidhyamegha.com/open_kg/ct> .
+<https://clinicaltrials.gov/ct2/show/NCT02954757> 
+    <http://www.w3.org/2000/01/rdf-schema#label> 
+    "NCT02954757"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> 
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> 
+    <https://vaidhyamegha.com/open_kg/ct> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> 
+    <http://www.w3.org/2000/01/rdf-schema#label> 
+    "EUCTR2014-005525-13-FI"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://clinicaltrials.gov/ct2/show/NCT02721914> 
+    <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> 
+    <https://vaidhyamegha.com/open_kg/ct> .
+<https://clinicaltrials.gov/ct2/show/NCT02721914> 
+    <http://www.w3.org/2000/01/rdf-schema#label> 
+    "NCT02721914"^^<http://www.w3.org/2001/XMLSchema#string> .
 ...
-<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2016-002461-66-IT> .
-<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/CTRI/2020/08/027368> .
-<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> 
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2016-002461-66-IT> .
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> 
+    <https://www.who.int/clinical-trials-registry-platform/CTRI/2020/08/027368> .
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> 
+    <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
 ```
 
 # Further reading
 
-See the [pandoc manual](http://pandoc.org/MANUAL.html) for more information on
-pandoc.
+For more information please read
 
-Authors struggling to fill this document with content are referred to
-@Upper_writers_1974.
-
+@10.1145/1013367.1013381.
+@10.1145/1629501.1629525.
 
 # Acknowledgements
 
