@@ -31,7 +31,77 @@ project:
 
 # Abstract
 
-This is an example article.  There is not much to see but filler text.
+Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl
+
+# Introduction
+
+# Sources
+
+- WHO's ICTRP
+  - Registries covered in ICTRP include : 
+- AACT Clinicaltrials.gov
+- NLM MeSH
+- NLM MRCOC
+- NLM PubMed
+- NLM PheGenI
+
+# Feature list
+
+- Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
+- Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and clinicaltrials.gov
+- Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
+- Links from trial to PubMed articles are added. PubMed's experts curate this metadata information for each article.
+- Added MRCOC to the graph for the selected articles linked to clinical trials.
+- Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
+- Added SparQL query execution feature. Adding CLI mode. Adding a count SparQL query for demo.
+- 5 co-existing bi-partite graphs together comprise this knowledge graph. Bi-partite graphs are between
+  - trial--> condition
+  - trial--> intervention
+  - trial --> articles
+  - article --> MeSH DUIs
+  - gene id --> MeSH DUIs
+
+# Demonstration
+
+## Querying knowledge graph using SparQL
+```
+$ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
+-m cli -q src/main/sparql/1_count_of_records.rq
+...
+Results:
+-------- 
+4766048^^http://www.w3.org/2001/XMLSchema#integer
+```
+
+## Querying knowledge graph using GraphQL (via HyperGraphQL)
+
+### Start server
+```
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar \
+--config src/main/resources/hql-config.json
+```
+### Start client
+
+In a separate terminal execute GraphQL query using curl (alternatively use Postman)
+
+```
+$ curl --location --request POST 'http://localhost:8080/graphql' --header 'Accept: application/ntriples' --header \
+'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' --header 'Content-Type: application/json' \
+--data-raw '{"query":"{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}","variables":{}}'
+
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> \<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2007-006072-11-SE> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2007-006072-11-SE"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+<https://clinicaltrials.gov/ct2/show/NCT02954757> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02954757"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+<https://www.who.int/clinical-trials-registry-platform/EUCTR2014-005525-13-FI> <http://www.w3.org/2000/01/rdf-schema#label> "EUCTR2014-005525-13-FI"^^<http://www.w3.org/2001/XMLSchema#string> .
+<https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://vaidhyamegha.com/open_kg/ct> .
+<https://clinicaltrials.gov/ct2/show/NCT02721914> <http://www.w3.org/2000/01/rdf-schema#label> "NCT02721914"^^<http://www.w3.org/2001/XMLSchema#string> .
+...
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2016-002461-66-IT> .
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/CTRI/2020/08/027368> .
+<http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
+```
 
 # Further reading
 
@@ -42,89 +112,6 @@ Authors struggling to fill this document with content are referred to
 @Upper_writers_1974.
 
 
-# Lorem Ipsum
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
-
-
-## Dolor sit amet
-
-Deserunt excepturi commodi sit qui velit quis. Delectus sit omnis culpa
-accusamus repellat iusto vel. Quod deserunt quasi nisi dolor. Quo eum id
-reiciendis dolor. Est qui illum et.
-
-Quo dolore molestiae et laboriosam occaecati explicabo corrupti. Earum expedita
-ducimus quaerat est quam ut molestiae. Illum deleniti vel labore facilis et cum
-est. Est nemo est vel ad. Assumenda consequatur rerum officiis atque officia.
-Est nihil iste cumque ad qui.
-
-Eaque sed sit totam enim. Et explicabo illum rerum aut. Aspernatur sit dolor
-animi tempora cum. Maxime in soluta aut. Explicabo id maiores voluptates aut
-voluptas id. Dolore sed labore voluptatem omnis doloribus mollitia aliquid
-cupiditate.
-
-In rerum saepe placeat. Deleniti suscipit sed quam fugit assumenda sit et
-tempora. Veniam illum expedita quia error qui quibusdam rerum. Qui ut sunt est
-eos.
-
-Recusandae et sit ut. Impedit deserunt consequatur et dignissimos vel et.
-Eveniet voluptatem magni quis est dolore excepturi officia nihil. Debitis quae
-commodi error.
-
-Modi debitis et ut saepe saepe dolorem. Quis sed autem expedita est voluptate
-esse neque. Quod aspernatur quam velit placeat nihil omnis debitis. Corporis sit
-rerum consectetur possimus rerum consequuntur. Rerum quas ut repellendus
-tenetur. Consequuntur adipisci dolores eveniet qui est ipsum.
-
-Atque deserunt necessitatibus unde facere amet molestiae. Ipsam at quia placeat
-aliquam autem. Enim corporis accusamus consequatur.
-
-Et vitae unde perferendis tenetur cupiditate non exercitationem. Aut molestiae
-sed est. Deserunt repudiandae non quia esse ad vitae vel in. Et reprehenderit
-dolore et aut distinctio.
-
-Vel quia molestiae quod sint fuga omnis est fuga. Minus quaerat repellat quod.
-Rerum rerum enim repellendus rerum consequatur non perspiciatis. Illo sapiente
-sed natus ipsa quia temporibus. Est nostrum fugit odio non voluptatem odit
-rerum. Et consequatur aut nostrum accusamus earum.
-
-Sit explicabo iure eligendi consequatur. Consequatur atque praesentium
-consequatur dolores quam. Neque eius provident harum placeat. Quo aut pariatur
-illum laborum porro minima. Dolorem nobis esse laudantium. Perspiciatis
-voluptate deleniti voluptatem et.
-
-Quos assumenda magnam non inventore. Adipisci repellendus eligendi possimus
-voluptate numquam voluptatem natus. Deleniti cupiditate facilis commodi aliquid
-voluptatem laudantium autem similique. Vel sunt cupiditate consequatur. Dolorum
-voluptatem nihil culpa fugiat non itaque animi iusto. Unde incidunt numquam
-vitae.
-
-Eius provident voluptatem animi quidem quia. Velit omnis voluptas atque.
-Voluptatem accusamus atque blanditiis commodi aspernatur ullam ad. Nulla quidem
-fugiat explicabo quo dolor hic.
-
-Rerum dolore quo ratione sed aspernatur doloremque. Ut neque laudantium quae
-enim dolores et. Laudantium dolores id assumenda autem aspernatur. Accusamus
-doloribus nihil rerum et atque est aut delectus.
-
-Nulla itaque mollitia vitae accusamus. Eveniet soluta praesentium dolore harum
-culpa. Totam voluptatem non aspernatur.
-
-Eveniet in illo consequatur. Fugiat et totam unde nihil quis. Non et velit
-recusandae blanditiis unde. Eaque fugiat id pariatur. Non numquam minima aut.
-Iste eos et autem et exercitationem velit officiis vero.
-
-Ullam minima quisquam est ducimus iste. Commodi occaecati inventore provident
-voluptatem repudiandae. Quia est qui dolore sit nisi officia doloremque dolor.
-Perspiciatis tempore laudantium quia repellendus quia deleniti. Sed consequuntur
-autem quisquam aliquam.
-
-Ut dolores natus et sunt delectus nulla. Ipsum eum quia ex est ut quia. Ratione
-et eius consequatur veritatis hic expedita ea.
+# Acknowledgements
 
 # References
