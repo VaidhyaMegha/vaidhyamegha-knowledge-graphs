@@ -19,7 +19,7 @@ institute:
       phone: +91 9618986039
       email: 'contact@vaidhyamegha.com'
 bibliography: bibliography.bib
-csl: apa.csl
+csl: acm.csl
 link-citations: true
 project:
   title: Open knowledge graph on clinical trials 
@@ -47,7 +47,22 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 ## Trial to condition
 ## Trial to intervention
-## Trial  to articles
+#  Clinical trials to research articles
+
+- The NLM (The world's largest medical library, the U.S. National Library of Medicine is part of the National Institutes of Health) extracts  trail ids from an article and places them into the article's metadata in secondary id field.
+- To retrieve journal articles related to a clinical trial id ex: NCT00000419, use PubMed’s API called e-Utils with clinical trial id as shown below:
+
+```
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT01874691[si]
+```
+
+- In the above URL "\[si\]" refers to Secondary ID which can be used to search within article's metadata.
+- All the journal articles related to the clinical trial id will be returned
+- Output contains PMIDs (pubmed records) of respective clinical trials.
+ ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
+- Using Spring WebClient, JAXB, Jackson and Lambok response XML is automatically parsed and PMID list is constructed in-memory. 
+- The PMID list is then written into RDF along with trial id using Apache Jena.
+
 ## Article  to MeSH DUIs
 ## Gene id  to MeSH DUIs
 
@@ -147,8 +162,11 @@ For more information please read
 
 # Declarations
 
+## Appendix
+
+# Tables 
+
+# Figures
+- ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
+
 # References
-
-## Tables 
-
-## Figures
