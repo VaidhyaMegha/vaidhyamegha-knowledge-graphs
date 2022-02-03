@@ -33,7 +33,7 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 # Introduction
 
-# Sources
+## Sources
 
 - WHO's ICTRP
   - Registries covered in ICTRP include : 
@@ -43,7 +43,16 @@ Using any clinical trial id from across the globe find the associated diseases, 
 - NLM PubMed
 - NLM PheGenI
 
-# Feature list
+# Methods
+
+## Trial to condition
+## Trial to intervention
+## Trial  to articles
+## Article  to MeSH DUIs
+## Gene id  to MeSH DUIs
+
+# Results
+## Feature list
 
 - Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
 - Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and clinicaltrials.gov
@@ -59,15 +68,10 @@ Using any clinical trial id from across the globe find the associated diseases, 
   - article --> MeSH DUIs
   - gene id --> MeSH DUIs
 
-# Trial to condition
-# Trial to intervention
-# Trial  to articles
-# Article  to MeSH DUIs
-# Gene id  to MeSH DUIs
 
-# Demonstration
+## Demonstration
 
-## Querying knowledge graph using SparQL
+### Querying knowledge graph using SparQL
 ```
 $ java -jar -Xms4096M -Xmx8144M \
     target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
@@ -78,14 +82,14 @@ Results:
 4766048^^http://www.w3.org/2001/XMLSchema#integer
 ```
 
-## Querying knowledge graph using GraphQL (via HyperGraphQL)
+### Querying knowledge graph using GraphQL (via HyperGraphQL)
 
-### Start server
+#### Start server
 ```
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar \
         --config src/main/resources/hql-config.json
 ```
-### Start client
+#### Start client
 
 In a separate terminal execute GraphQL query using curl (alternatively use Postman)
 
@@ -130,7 +134,9 @@ $ curl --location --request POST 'http://localhost:8080/graphql' \
     <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
 ```
 
-# Further reading
+# Discussions
+
+## Further reading
 
 For more information please read
 
@@ -139,4 +145,10 @@ For more information please read
 
 # Acknowledgements
 
+# Declarations
+
 # References
+
+## Tables 
+
+## Figures
