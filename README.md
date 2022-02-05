@@ -189,7 +189,7 @@ Below is a very brief specification
 
 ## Documentation
 
-More notes, including references, is available [here](docs/open_knowledge_graph_on_clinical_trials/out.pdf) and [here](docs/open_knowledge_graph_on_clinical_trials/README.md) 
+More information, including references, is available in [article](docs/open_knowledge_graph_on_clinical_trials/out.pdf) and also [here](docs/open_knowledge_graph_on_clinical_trials/README.md) 
 
 ## Prequels to this project
 

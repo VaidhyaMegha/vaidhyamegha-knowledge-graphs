@@ -33,7 +33,20 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 # Introduction
 
-A knowledge graph could be defined @hogan2021knowledge as xxx 
+A knowledge graph could be defined as below per @hogan2021knowledge 
+
+```
+...
+Herein we adopt an inclusive definition, where we view a knowledge graph as a graph 
+of data intended to accumulate and convey knowledge of the real world, whose nodes 
+represent entities of interest and whose edges represent relations between these 
+entities. The graph of data (aka data graph) conforms to a graph-based data model, 
+which may be a directed edge-labelled graph, a propertygraph, etc
+... 
+By knowledge, we refer to something that is known. Such knowledge may be accumulated 
+from external sources, or extracted from the knowledge graph itself.
+```
+
 The objective of this project was to build a knowledge graph with clinical trial ids at the heart and below feature list in addition :
 
 ## Feature list
@@ -73,14 +86,14 @@ This section lists of high level steps that were executed to build each of the 5
 - Database snapshot is in the form a PostgreSQL database dump.
 - Snapshot was restored into a PostgreSQL database and the table 'browse_conditions' was queried to retrieve MeSH literals for conditions.
 - MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
-- Trial id and MeSH DUIs were used to create an edge in the knowledge graph.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
 
 ## Linking clinical trials to interventions
 
 - The same AACT snapshot as above includes all the trial registration data along with MeSH literals for interventions too.
 - Snapshot was restored into a PostgreSQL database and the table 'browse_interventionss' was queried to retrieve MeSH literals for conditions.
 - MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
-- Trial id and MeSH DUIs were used to create an edge in the knowledge graph.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
 
 ## Collecting trials from across the globe
 
@@ -102,7 +115,9 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 - In the above URL "\[si\]" refers to Secondary ID which can be used to search within article's metadata.
 - All the journal articles related to the trial id are collected from the above API invocation.
 - Output contains PMIDs (pubmed records) of respective clinical trials.
+
  ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
+
 - Using Spring WebClient, JAXB, Jackson and Lambok response XML is automatically parsed and PMID list is constructed in-memory. 
 - The PMID list is then written into RDF along with trial id using Apache Jena.
 - The PMIDs are also persisted into database along with trial id, irrespective of whether any linked articles are found or not.
@@ -119,13 +134,13 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 - This list of article ids is read one id at a time, i.e. it is read in a streaming fashion.
 - Filtered and sorted MRCOC file is also read in a streaming fashion in a file co-parsing patterns.
 - Matches are found between articles and MRCOC file records while linearly parsing both.
-- All matches are saved into knowledge graph as edges.
+- All matches are saved into knowledge graph as edges using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
 
 ## Linking genes to MeSH DUIs
 
 - NLM provides PheGenI, a search tool and database for linking Phenotype MeSH literals to Gene IDs.
 - Phenotype/trait along with Gene Id 1 and Gene ID 2 are selected from the PheGeni file.
-- If trait is already present in the knowledge graph i.e. if the trait is found to be linked to any trial, then below edges are added
+- If trait is already present in the knowledge graph i.e. if the trait is found to be linked to any trial, then below edges are added using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
   - trait --> Gene Id 1
   - trait --> Gene Id 2
 
@@ -134,22 +149,33 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 
 ## Querying knowledge graph using SparQL
 ```
-$ java -jar -Xms4096M -Xmx8144M \
-    target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
+java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar \
     -m cli -q src/main/sparql/1_count_of_records.rq
 ...
 Results:
 -------- 
-4766048^^http://www.w3.org/2001/XMLSchema#integer
+5523173^^http://www.w3.org/2001/XMLSchema#integer
 ```
 
 ## Querying knowledge graph using GraphQL (via HyperGraphQL)
 
 ### Start server
 ```
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar \
-        --config src/main/resources/hql-config.json
+  java -cp "target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar:lib/*" \ 
+    com.vaidhyamegha.data_cloud.kg.App -m server
+
 ```
+### From Postman
+
+- With ntriples response
+
+  ![GraphQL - NTriples response](./images/ntriples_graphql_postman.png)
+
+- With json response
+
+  ![GraphQL - JSON response](./images/json_graphql_postman.png)
+
+
 ### Start client
 
 In a separate terminal execute GraphQL query using curl (alternatively use Postman)
@@ -197,22 +223,71 @@ $ curl --location --request POST 'http://localhost:8080/graphql' \
 
 # Discussions
 
-## Further reading
-
-For more information please read
-
-@10.1145/1013367.1013381.
-@10.1145/1629501.1629525.
-
 # Acknowledgements
 
 # Declarations
 
 ## Appendix
 
-# Tables 
+# Tables
 
-# Figures
-- ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
+# Web resources
+
+## Knowledge graph
+- Introduction to [knowledge graphs](https://arxiv.org/pdf/2003.02320.pdf)
+
+## MeSH
+- [Tree](https://meshb.nlm.nih.gov/treeView) view
+- [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
+
+## PheGenI
+- What [is](https://www.genome.gov/27543987/2011-news-feature-new-web-portal-expands-view-of-genetic-association-data-for-researchers) PheGenI
+- PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
+- Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
+
+## Apache Jena
+- [Download](https://jena.apache.org/download/index.cgi)
+- [Read](https://jena.apache.org/documentation/io/rdf-input.html) RDF files
+- [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
+- [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
+- [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
+- index RDF files
+- [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
+- count triples [query](https://stackoverflow.com/a/51289880/294552)
+- Execute SparQL query [programmatically](https://github.com/apache/jena/blob/main/jena-examples/src/main/java/arq/examples/ExProg1.java)
+
+## GraphQL
+- [Bridges between GraphQL and RDF](https://www.w3.org/Data/events/data-ws-2019/assets/position/Ruben%20Taelman.pdf)
+
+## Java
+- Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
+- Invoke Entrez API using Spring [webclient](https://www.baeldung.com/spring-webclient-resttemplate)
+    - Handling [XML response](https://stackoverflow.com/questions/68209076/spring-resttemplate-works-for-string-but-not-for-my-class)
+- JAXB [impl](https://stackoverflow.com/a/61283181/294552) in Java 11
+- JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
+- Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
+- [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
+- Other older relevant links on Java and Entrez
+    - [download-pubmed-abstracts-in-java](https://stackoverflow.com/questions/5410151/download-pubmed-abstracts-in-java)
+    - Github repo : [pubmed_ws_client](https://github.com/renaud/pubmed_ws_client)
+- Read file into a [string](https://howtodoinjava.com/java/io/java-read-file-to-string-examples/)
+
+## Linux commands
+- Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
+- Prevent grep from exiting when match is [not](https://unix.stackexchange.com/a/330662/47615) found
+
+## PostgreSQL
+- PostgreSQL [array](https://www.postgresql.org/docs/9.1/arrays.html) columns
+    - JDBC [insert](https://tonaconsulting.wordpress.com/2013/05/28/postgres-and-multi-dimensions-arrays-in-jdbc/) into array columns
+- PostgreSQL date column with [default](https://stackoverflow.com/a/910937/294552) value
+- PostgreSQL [upsert](https://www.postgresqltutorial.com/postgresql-upsert/) statement
+- PostgreSQL - pg_restore - restore only one selected [schema](https://stackoverflow.com/a/970491/294552)
+- PostgreSQL - [Array functions](https://www.postgresql.org/docs/8.4/functions-array.html)
+- Execute query on PostgreSQL using psql [non-interactively](https://stackoverflow.com/a/6405296/294552)
+- Save psql inline query output to a [file](https://stackoverflow.com/a/11870348/294552)
+- In PostgreSQL formulate a query to get [all items](https://stackoverflow.com/a/34592639/294552) in an array column
+
+## Postman
+- [Tutorial](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/graphql/) for using GraphQL with Postman
 
 # References
