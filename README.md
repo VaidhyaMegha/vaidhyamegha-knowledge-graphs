@@ -76,6 +76,11 @@ VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.0232
 
 ## Release notes 
 
+- v0.9
+  - Enable server mode of execution using [HyperGraphQL](https://www.hypergraphql.org/)
+  ```
+    java -cp "target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar:lib/*" com.vaidhyamegha.data_cloud.kg.App -m server
+  ```
 - v0.8
   - Enable GraphQL interface to the knowledge graph using [HyperGraphQL](https://www.hypergraphql.org/)
   ```
