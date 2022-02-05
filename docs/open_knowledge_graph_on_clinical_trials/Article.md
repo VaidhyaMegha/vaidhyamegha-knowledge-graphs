@@ -33,6 +33,7 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 # Introduction
 
+A knowledge graph could be defined @hogan2021knowledge as xxx 
 The objective of this project was to build a knowledge graph with clinical trial ids at the heart and below feature list in addition :
 
 ## Feature list
@@ -62,6 +63,8 @@ The objective of this project was to build a knowledge graph with clinical trial
 - NLM PheGenI
 
 # Methods
+
+This section lists of high level steps that were executed to build each of the 5 bi-partite graphs.
 
 ## Linking clinical trials to conditions
 

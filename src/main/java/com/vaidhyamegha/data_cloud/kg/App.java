@@ -48,6 +48,9 @@ public class App {
     @Option(name = "-me", aliases = "--mesh-rdf", usage = "Path to the downloaded MeSH RDF file.", required = false)
     private String meshRDF = "data/open_knowledge_graph_on_clinical_trials/mesh2022.nt";
 
+    @Option(name = "-h", aliases = "--hql-config-file", usage = "Path to the HyperGraphQL config file path.", required = false)
+    public static String hqlConfig = "src/main/resources/hql-config.json";
+
     @Option(name = "-m", aliases = "--mode", usage = "Build RDF or query pre-built RDF?", required = false)
     private MODE mode = MODE.BUILD;
 
@@ -72,7 +75,7 @@ public class App {
         new App().doMain(args);
     }
 
-    public void doMain(String[] args) throws IOException {
+    public void doMain(String[] args)  {
         CmdLineParser parser = new CmdLineParser(this);
 
         try {
@@ -111,6 +114,8 @@ public class App {
                         for (String s: v) System.out.println(rb.get(s));
                     }
                 }
+            }  else if(mode == MODE.SERVER) {
+                org.hypergraphql.Application.main(new String[]{"--config", hqlConfig});
             } else {
                 throw new UnsupportedOperationException("Non-build modes are not yet supported");
             }
@@ -121,6 +126,8 @@ public class App {
             System.err.println();
 
             System.err.println("  Example: java App" + parser.printExample(ALL));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

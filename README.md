@@ -4,46 +4,41 @@ This repo will host open knowledge graphs from [VaidhyaMegha](https://vaidhyameg
 
 # Open Knowledge Graph on Clinical Trials
 
-VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on clinical trials, comprising
-
-- Clinical trial ids from across the globe
-- MeSH ids for
-    - Symptoms/Phenotype
-    - Diseases
-- PubMed Article ids
-- Genotype(from Human Genome),
+VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on clinical trials. This repository contains the source code along with instructions to generate and use the knowledge graph.
 
 ## Getting Started
 
-- Pre-requisite steps for compilation
+- Pre-requisite steps
   - Create a folder  'lib'. Download algs4.jar file from [here](https://algs4.cs.princeton.edu/code/algs4.jar) and place in 'lib' folder.
   - Download hypergraphql jar file from [here](https://www.hypergraphql.org/resources/hypergraphql-3.0.1-exe.jar) and place in 'lib' folder.
   - Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file 'data/open_knowledge_graph_on_clinical_trials'  folder.
+  - Download PheGenI from [here](https://www.ncbi.nlm.nih.gov/projects/gap/eqtl/EpiViewBE.cgi?type=dl.tab) and place PheGenI_Association_full.tab file 'data/open_knowledge_graph_on_clinical_trials'  folder.
 
 - To compile and package
   ```
   mvn clean package assembly:single -DskipTests
   ```
-
 - To build RDF
   ```
-  java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar
+  java -jar -Xms4096M -Xmx8192M target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar
   ```
-
 - To query using SparQL
   ```
-  $ java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar -m cli -q src/main/sparql/1_count_of_records.rq
+  java -jar -Xms4096M -Xmx8144M target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar -m cli -q src/main/sparql/1_count_of_records.rq
   ...
   Results:
   -------- 
-  4766048^^http://www.w3.org/2001/XMLSchema#integer
+  5523173^^http://www.w3.org/2001/XMLSchema#integer
   ```
-
-- To query using GraphQL (using HyperGraphQL)
+- To query using GraphQL (via [HyperGraphQL](https://www.hypergraphql.org/documentation/))
   ```
-  java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar --config src/main/resources/hql-config.json
+  java -cp "target/vaidhyamegha-knowledge-graphs-v0.9-jar-with-dependencies.jar:lib/*" com.vaidhyamegha.data_cloud.kg.App -m server
   ```
+  - From Postman with ntriples response
+![ntriples](docs/open_knowledge_graph_on_clinical_trials/images/ntriples_graphql_postman.png)
+  - From Postman with json response
+![ntriples](docs/open_knowledge_graph_on_clinical_trials/images/json_graphql_postman.png)
   - In a separate terminal execute GraphQL query using curl (alternatively use Postman)
     ```
     $ curl --location --request POST 'http://localhost:8080/graphql' --header 'Accept: application/ntriples' --header 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8,kn;q=0.7' --header 'Content-Type: application/json' --data-raw '{"query":"{\n  trial_GET(limit: 30, offset: 1) {\n    label\n  }\n \n}","variables":{}}'
@@ -60,6 +55,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
     <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/CTRI/2020/08/027368> .
     <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
     ```
+  
 ## Features as on current release - 0.8
 
 **Summary** : Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl  
@@ -75,7 +71,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 - Added SparQL query execution feature. Adding CLI mode. Adding a count SparQL query for demo.
 - 5 co-existing bi-partite graphs b/w trial--> condition, trial--> intervention, trial --> articles, article --> MeSH DUIs, gene id --> MeSH DUIs together comprise this knowledge graph.
 
-**Changes in this release** : Enabled GraphQL API on the knowledge graph 
+**Changes in this release** : Server mode of execution is added.
 
 
 ## Release notes 
@@ -186,11 +182,11 @@ Below is a very brief specification
         - MeSH, Clinical Trial, PubMed Article, Symptom/Phenotype, Genotype(from Human Genome)
         - Additionally, clinical trial -> clinical trial links across trial registries will also be discovered and added.
 
-## Source code
+## Documentation
 
-- Source code would be hosted [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs).
+More notes, including references, is available [here](docs/open_knowledge_graph_on_clinical_trials/out.pdf) and [here](docs/open_knowledge_graph_on_clinical_trials/README.md) 
 
-## Reference
+## Prequels to this project
 
 VaidhyaMegha's [prior work](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/tree/main/examples) on
 
@@ -200,7 +196,3 @@ VaidhyaMegha's [prior work](https://github.com/VaidhyaMegha/vaidhyamegha-knowled
 - trials to research articles linking.
 
 Last 3 are covered in the ["examples"](examples) folder [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs). They were covered in separate public repos [here](https://github.com/VaidhyaMegha/) earlier.
-
-## Documentation
-
-More notes is available [here](docs/open_knowledge_graph_on_clinical_trials/README.md)
