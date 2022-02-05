@@ -33,6 +33,24 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 # Introduction
 
+The objective of this project was to build a knowledge graph with clinical trial ids at the heart and below feature list in addition :
+
+## Feature list
+
+- Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
+- Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and [clinicaltrials.gov](https://clinicaltrials.gov)
+- Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
+- Links from trial to PubMed articles are added. PubMed's experts curate this metadata information for each article.
+- Added MRCOC to the graph for the selected articles linked to clinical trials.
+- Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
+- Added SparQL query execution feature. Adding CLI mode. Adding a count SparQL query for demo.
+- 5 co-existing bi-partite graphs together comprise this knowledge graph. Bi-partite graphs are between
+    - trial--> condition
+    - trial--> intervention
+    - trial --> articles
+    - article --> MeSH DUIs
+    - gene id --> MeSH DUIs
+
 ## Sources
 
 - WHO's ICTRP
@@ -45,10 +63,32 @@ Using any clinical trial id from across the globe find the associated diseases, 
 
 # Methods
 
-## Trial to condition
-## Trial to intervention
-#  Clinical trials to research articles
+## Linking clinical trials to conditions
 
+- AACT offers clinicaltrials.gov's clinical trial registration data as a downloadable database snapshot. 
+- This snapshot includes all the trial registration data along with MeSH literals for conditions.
+- Database snapshot is in the form a PostgreSQL database dump.
+- Snapshot was restored into a PostgreSQL database and the table 'browse_conditions' was queried to retrieve MeSH literals for conditions.
+- MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph.
+
+## Linking clinical trials to interventions
+
+- The same AACT snapshot as above includes all the trial registration data along with MeSH literals for interventions too.
+- Snapshot was restored into a PostgreSQL database and the table 'browse_interventionss' was queried to retrieve MeSH literals for conditions.
+- MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph.
+
+## Collecting trials from across the globe
+
+- While several approaches exist to keep the design simple, ICTRP's full export dataset along with its weekly incremental files were used.
+- These files were imported into a PostgreSQL database as a table.
+- After de-duplicating trial ids across AACT's database a global unique list of trial ids, across the globe, is formulated.
+- This final list of trials is exported as an intermediate artifact in a CSV file format.
+
+## Linking clinical trials to research articles
+
+- The final list of trials exported above as CSV file is read one-line at a time.
 - The NLM (The world's largest medical library, the U.S. National Library of Medicine is part of the National Institutes of Health) extracts  trail ids from an article and places them into the article's metadata in secondary id field.
 - To retrieve journal articles related to a clinical trial id ex: NCT00000419, use PubMed’s API called e-Utils with clinical trial id as shown below:
 
@@ -57,36 +97,39 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 ```
 
 - In the above URL "\[si\]" refers to Secondary ID which can be used to search within article's metadata.
-- All the journal articles related to the clinical trial id will be returned
+- All the journal articles related to the trial id are collected from the above API invocation.
 - Output contains PMIDs (pubmed records) of respective clinical trials.
  ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
 - Using Spring WebClient, JAXB, Jackson and Lambok response XML is automatically parsed and PMID list is constructed in-memory. 
 - The PMID list is then written into RDF along with trial id using Apache Jena.
+- The PMIDs are also persisted into database along with trial id, irrespective of whether any linked articles are found or not.
 
-## Article  to MeSH DUIs
-## Gene id  to MeSH DUIs
+
+## Linking articles to MeSH DUIs
+
+- NLM provides a MeSH term co-occurrence file which provides co-occurrences of MeSH terms (DUIs) at the article level in a pipe separated file format.
+- This file is currently at 183 GB size with approximately 1.7 Billion rows.
+- The necessary 3 columns need for the purposes of linking articles to MeSH DUI were selected from the file using linux commands. Columns include article id, MeSH DUI 1 and MeSH DUI 2
+- The resultant filtered list is sorted on article id column, to allow for efficient search operations. 
+- This filtered and sorted MRCOC file currently is of 40 GB size with same row count i.e. 1.7 Billion rows
+- List of trials along with articles, persisted above in database is used to a build a sorted list of article ids.
+- This list of article ids is read one id at a time, i.e. it is read in a streaming fashion.
+- Filtered and sorted MRCOC file is also read in a streaming fashion in a file co-parsing patterns.
+- Matches are found between articles and MRCOC file records while linearly parsing both.
+- All matches are saved into knowledge graph as edges.
+
+## Linking genes to MeSH DUIs
+
+- NLM provides PheGenI, a search tool and database for linking Phenotype MeSH literals to Gene IDs.
+- Phenotype/trait along with Gene Id 1 and Gene ID 2 are selected from the PheGeni file.
+- If trait is already present in the knowledge graph i.e. if the trait is found to be linked to any trial, then below edges are added
+  - trait --> Gene Id 1
+  - trait --> Gene Id 2
 
 # Results
-## Feature list
-
-- Using GraphQL API knowledge graph can be queried using any API client tool ex: curl or Postman.
-- Graph includes trials from across the globe. Data is sourced from WHO's ICTRP and clinicaltrials.gov
-- Links from trial to MeSH vocabulary are added for conditions and interventions employed in the trial.
-- Links from trial to PubMed articles are added. PubMed's experts curate this metadata information for each article.
-- Added MRCOC to the graph for the selected articles linked to clinical trials.
-- Added PheGenI links i.e. links from phenotype to genotype as links between MeSH DUI and GeneID.
-- Added SparQL query execution feature. Adding CLI mode. Adding a count SparQL query for demo.
-- 5 co-existing bi-partite graphs together comprise this knowledge graph. Bi-partite graphs are between
-  - trial--> condition
-  - trial--> intervention
-  - trial --> articles
-  - article --> MeSH DUIs
-  - gene id --> MeSH DUIs
 
 
-## Demonstration
-
-### Querying knowledge graph using SparQL
+## Querying knowledge graph using SparQL
 ```
 $ java -jar -Xms4096M -Xmx8144M \
     target/vaidhyamegha-knowledge-graphs-1.0-SNAPSHOT-jar-with-dependencies.jar \
@@ -97,14 +140,14 @@ Results:
 4766048^^http://www.w3.org/2001/XMLSchema#integer
 ```
 
-### Querying knowledge graph using GraphQL (via HyperGraphQL)
+## Querying knowledge graph using GraphQL (via HyperGraphQL)
 
-#### Start server
+### Start server
 ```
 java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -jar lib/hypergraphql-3.0.1-exe.jar \
         --config src/main/resources/hql-config.json
 ```
-#### Start client
+### Start client
 
 In a separate terminal execute GraphQL query using curl (alternatively use Postman)
 
