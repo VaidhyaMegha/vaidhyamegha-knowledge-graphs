@@ -56,7 +56,7 @@ VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.0232
     <http://hypergraphql.org/query> <http://hypergraphql.org/query/trial_GET> <https://www.who.int/clinical-trials-registry-platform/EUCTR2013-001294-24-DE> .
     ```
   
-## Features as on current release - 0.8
+## Features as on current release - 0.9
 
 **Summary** : Using any trial id from across the globe find the associated diseases/interventions,  research articles and genes. Also discover relationships b/w various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl  
 
@@ -163,30 +163,6 @@ VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.0232
   - Clinical trials are linked to the RDF nodes corresponding to the MeSH terms for conditions. For example : 
   - Download the enhanced RDF from [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs/releases/tag/v0.2).
 
-## Next steps 
-
-- Host Knowledge graph on Ne04j's cloud service, [Aura DB](https://neo4j.com/cloud/aura). 
-- Use Neo4j's [GraphQL](https://neo4j.com/developer/graphql/) API from Postman to demonstrate sample queries on clinical trials.
-- Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
-- Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
-- Build SparQL + GraphQL version of API to allow direct querying of the graph. Provide some reasonable examples that are harder in SQL.
-- Snowmed CT, ICD 10.
-
-## Specification
-
-Below is a very brief specification
-
-- Inputs
-    - Mesh RDF
-    - WHO's clinical trials database - [ICTRP](https://www.who.int/clinical-trials-registry-platform).
-    - US clinical trial [registry](https://clinicaltrials.gov)data from CTTI's [AACT](https://aact.ctti-clinicaltrials.org/download) database.
-    - Data from clinical trial registries across the globe scraped from their websites' ex: [India](http://ctri.nic.in/Clinicaltrials/login.php)
-    - MEDLINE Co-Occurrences [(MRCOC)](https://lhncbc.nlm.nih.gov/ii/information/MRCOC.html) Files
-- Outputs
-    - Clinical Trials RDF with below constituent ids and their relationships
-        - MeSH, Clinical Trial, PubMed Article, Symptom/Phenotype, Genotype(from Human Genome)
-        - Additionally, clinical trial -> clinical trial links across trial registries will also be discovered and added.
-
 ## Documentation
 
 More information, including references, is available in [article](docs/open_knowledge_graph_on_clinical_trials/out.pdf) and also [here](docs/open_knowledge_graph_on_clinical_trials/README.md) 
@@ -201,3 +177,14 @@ VaidhyaMegha's [prior work](https://github.com/VaidhyaMegha/vaidhyamegha-knowled
 - trials to research articles linking.
 
 Last 3 are covered in the ["examples"](examples) folder [here](https://github.com/VaidhyaMegha/vaidhyamegha-knowledge-graphs). They were covered in separate public repos [here](https://github.com/VaidhyaMegha/) earlier.
+
+## Next steps 
+
+- Complete article
+- Full list of trial ids to be used in combination with id_information table to generate a final list of unique trials using WQUPC algorithm
+- Add secondary trial ids to graph (this may increase graph size considerably). However, it could be of utility.
+- Build SparQL + GraphQL version of API to allow direct querying of the graph. Provide some reasonable examples that are harder in SQL.
+- Snowmed CT, ICD 10.
+- Host Knowledge graph on Ne04j's cloud service, [Aura DB](https://neo4j.com/cloud/aura).
+- Use Neo4j's [GraphQL](https://neo4j.com/developer/graphql/) API from Postman to demonstrate sample queries on clinical trials.
+

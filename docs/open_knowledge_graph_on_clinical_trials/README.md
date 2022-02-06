@@ -28,7 +28,6 @@ Below is a brief specification
   - Mesh RDF
   - WHO's clinical trials database - [ICTRP](https://www.who.int/clinical-trials-registry-platform).
   - US clinical trial [registry ](https://clinicaltrials.gov)data from CTTI's [AACT](https://aact.ctti-clinicaltrials.org/download) database.
-  - Data from clinical trial registries across the globe scraped from their websites' ex: [India](http://ctri.nic.in/Clinicaltrials/login.php)
 - Outputs
   - Clinical Trials RDF with below constituent ids and their relationships
     - MeSH, Clinical Trial, PubMed Article, Symptom/Phenotype, Genotype(from Human Genome)

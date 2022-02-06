@@ -67,13 +67,29 @@ The objective of this project was to build a knowledge graph with clinical trial
 
 ## Sources
 
-- WHO's ICTRP
-  - Registries covered in ICTRP include : 
-- AACT Clinicaltrials.gov
-- NLM MeSH
-- NLM MRCOC
+- WHO's [ICTRP](https://www.who.int/clinical-trials-registry-platform/the-ictrp-search-portal). Registries covered in ICTRP include : 
+  - Australian New Zealand Clinical Trials Registry (ANZCTR)
+  - Brazilian Clinical Trials Registry (ReBec)
+  - Chinese Clinical Trial Registry (ChiCTR)
+  - Clinical Research Information Service (CRiS), Republic of Korea
+  - Clinical Trials Registry - India (CTRI)
+  - Cuban Public Registry of Clinical Trials(RPCEC)
+  - EU Clinical Trials Register (EU-CTR)
+  - German Clinical Trials Register (DRKS)
+  - Iranian Registry of Clinical Trials (IRCT)
+  - ISRCTN
+  - Japan Registry of Clinical Trials (jRCT)
+  - Lebanese Clinical Trials Registry (LBCTR)
+  - Thai Clinical Trials Registry (TCTR)
+  - The Netherlands National Trial Register (NTR)
+  - Pan African Clinical Trial Registry (PACTR)
+  - Peruvian Clinical Trial Registry (REPEC)
+  - Sri Lanka Clinical Trials Registry (SLCTR)
+- AACT @10.1371/journal.pone.0033677 database for [clinicaltrials.gov](https://clincialtrials.gov)
+- NLM [MeSH](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC35238/#) @lipscomb2000medical
+- NLM [MRCOC](https://lhncbc.nlm.nih.gov/ii/information/MRCOC.html)
 - NLM PubMed
-- NLM PheGenI
+- NLM [PheGenI](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3865418/) @ramos2014phenotype
 
 # Methods
 
@@ -81,19 +97,19 @@ This section lists of high level steps that were executed to build each of the 5
 
 ## Linking clinical trials to conditions
 
-- AACT offers clinicaltrials.gov's clinical trial registration data as a downloadable database snapshot. 
+- AACT @10.1371/journal.pone.0033677 offers [clinicaltrials.gov](https://clincialtrials.gov)'s clinical trial registration data as a downloadable database snapshot. 
 - This snapshot includes all the trial registration data along with MeSH literals for conditions.
 - Database snapshot is in the form a PostgreSQL database dump.
 - Snapshot was restored into a PostgreSQL database and the table 'browse_conditions' was queried to retrieve MeSH literals for conditions.
 - MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
-- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381 @10.1145/1629501.1629525
 
 ## Linking clinical trials to interventions
 
 - The same AACT snapshot as above includes all the trial registration data along with MeSH literals for interventions too.
-- Snapshot was restored into a PostgreSQL database and the table 'browse_interventionss' was queried to retrieve MeSH literals for conditions.
+- Snapshot was restored into a PostgreSQL database and the table 'browse_interventions' was queried to retrieve MeSH literals for conditions.
 - MeSH literals were then queried within MeSH RDF to retrieve MeSH DUIs.
-- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
+- Trial id and MeSH DUIs were used to create an edge in the knowledge graph using Apache Jena @10.1145/1013367.1013381 @10.1145/1629501.1629525
 
 ## Collecting trials from across the globe
 
@@ -132,15 +148,15 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 - This filtered and sorted MRCOC file currently is of 40 GB size with same row count i.e. 1.7 Billion rows
 - List of trials along with articles, persisted above in database is used to a build a sorted list of article ids.
 - This list of article ids is read one id at a time, i.e. it is read in a streaming fashion.
-- Filtered and sorted MRCOC file is also read in a streaming fashion in a file co-parsing patterns.
+- Filtered and sorted MRCOC file is also read in a streaming fashion in a file [co-parsing pattern](https://www.linkedin.com/pulse/why-algorithmic-thinking-needed-vaidhyamegha).
 - Matches are found between articles and MRCOC file records while linearly parsing both.
-- All matches are saved into knowledge graph as edges using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
+- All matches are saved into knowledge graph as edges using Apache Jena @10.1145/1013367.1013381 @10.1145/1629501.1629525
 
 ## Linking genes to MeSH DUIs
 
 - NLM provides PheGenI, a search tool and database for linking Phenotype MeSH literals to Gene IDs.
 - Phenotype/trait along with Gene Id 1 and Gene ID 2 are selected from the PheGeni file.
-- If trait is already present in the knowledge graph i.e. if the trait is found to be linked to any trial, then below edges are added using Apache Jena @10.1145/1013367.1013381. @10.1145/1629501.1629525.
+- If trait is already present in the knowledge graph i.e. if the trait is found to be linked to any trial, then below edges are added using Apache Jena @10.1145/1013367.1013381 @10.1145/1629501.1629525
   - trait --> Gene Id 1
   - trait --> Gene Id 2
 
@@ -158,6 +174,8 @@ Results:
 ```
 
 ## Querying knowledge graph using GraphQL
+
+Design for possibly bridges between GraphQL and RDF @taelman2019bridges datasets have been explored and implemented extensively since [GraphQL](https://graphql.org/) @byron2015graphql was originally published as an alternative API form.
 
 ### Start server
 ```
@@ -225,8 +243,6 @@ $ curl --location --request POST 'http://localhost:8080/graphql' \
 # Acknowledgements
 
 # Declarations
-
-## Appendix
 
 # Tables
 
