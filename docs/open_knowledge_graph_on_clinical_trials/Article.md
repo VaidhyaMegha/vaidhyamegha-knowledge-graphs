@@ -15,7 +15,7 @@ institute:
       phone: +91 040 4900 6000
   - vaidhyamegha:
       name: VaidhyaMegha Private Limited
-      address: Plot No. 112/A, H. No. 3-5-139/3/3/2,Shivanagar Colony Attapur,Hyderguda, Hyderabad,Telangana 500048.
+      address: Plot No. 112/A, H. No. 3-5-139/3/3/2, Shivanagar Colony Attapur, Hyderguda, Hyderabad,Telangana 500048.
       phone: +91 9618986039
       email: 'contact@vaidhyamegha.com'
 bibliography: bibliography.bib
@@ -29,7 +29,7 @@ project:
 
 # Abstract
 
-Using any clinical trial id from across the globe find the associated diseases, interventions, research articles and genes. Also discover relationships between various medical topics through co-occurrences in articles. Query the graph using SparQL from cli or GraphQL using any API client  tool ex: Postman or curl
+Knowledge graphs, semantic web and related topics have garnered considerable interest recently. Knowledge graphs are considered generally as a natural/intuitive form of knowledge representation and also as a queryable repository of knowledge. Several knowledge graphs have been built in several domains including medicine and its subdomains. On clinical trials, the research engine, of innovation in medicine, very few attempts have been made. This paper presents methods and techniques to build a knowledge graph for clinical trials. Such that,using any clinical trial id, from across the globe, we can find the associated diseases, interventions, research articles and genes. This paper demonstrates way to query this graph using SparQL from command-line or GraphQL using any API client tool ex: Postman or curl. Also, we can discover relationships between various medical topics through co-occurrences in articles.
 
 # Introduction
 
