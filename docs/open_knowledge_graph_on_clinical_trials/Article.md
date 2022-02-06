@@ -116,7 +116,7 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=NCT018
 - All the journal articles related to the trial id are collected from the above API invocation.
 - Output contains PMIDs (pubmed records) of respective clinical trials.
 
- ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
+  ![Trials-Articles](./images/trials_articles/Trials-Articles.png)
 
 - Using Spring WebClient, JAXB, Jackson and Lambok response XML is automatically parsed and PMID list is constructed in-memory. 
 - The PMID list is then written into RDF along with trial id using Apache Jena.
@@ -157,7 +157,7 @@ Results:
 5523173^^http://www.w3.org/2001/XMLSchema#integer
 ```
 
-## Querying knowledge graph using GraphQL (via HyperGraphQL)
+## Querying knowledge graph using GraphQL
 
 ### Start server
 ```
@@ -169,12 +169,11 @@ Results:
 
 - With ntriples response
 
-  ![GraphQL - NTriples response](./images/ntriples_graphql_postman.png)
+![GraphQL - NTriples response](./images/ntriples_graphql_postman.png)
 
 - With json response
 
-  ![GraphQL - JSON response](./images/json_graphql_postman.png)
-
+![GraphQL - JSON response](./images/json_graphql_postman.png)
 
 ### Start client
 
@@ -230,64 +229,5 @@ $ curl --location --request POST 'http://localhost:8080/graphql' \
 ## Appendix
 
 # Tables
-
-# Web resources
-
-## Knowledge graph
-- Introduction to [knowledge graphs](https://arxiv.org/pdf/2003.02320.pdf)
-
-## MeSH
-- [Tree](https://meshb.nlm.nih.gov/treeView) view
-- [Record](https://meshb.nlm.nih.gov/record/ui?ui=D019588) view along with 'Mesh Tree Structures'
-
-## PheGenI
-- What [is](https://www.genome.gov/27543987/2011-news-feature-new-web-portal-expands-view-of-genetic-association-data-for-researchers) PheGenI
-- PheGenI: The Phenotype-Genotype Integrator [demo](https://www.youtube.com/watch?v=v_yEy--HcKc)
-- Downstream analysis of PheGenI results [demo](https://www.youtube.com/watch?v=Tf9aNkKDF3o)
-
-## Apache Jena
-- [Download](https://jena.apache.org/download/index.cgi)
-- [Read](https://jena.apache.org/documentation/io/rdf-input.html) RDF files
-- [Write](https://jena.apache.org/documentation/io/rdf-output.html) RDF files
-- [Querying](https://jena.apache.org/tutorials/rdf_api.html#ch-Querying-a-Model) a model
-- [SparQL](https://jena.apache.org/tutorials/sparql_query1.html)
-- index RDF files
-- [query](https://towardsdatascience.com/extract-and-query-knowledge-graphs-using-apache-jena-sparql-engine-5c66648797a4) RDF files using indexes
-- count triples [query](https://stackoverflow.com/a/51289880/294552)
-- Execute SparQL query [programmatically](https://github.com/apache/jena/blob/main/jena-examples/src/main/java/arq/examples/ExProg1.java)
-
-## GraphQL
-- [Bridges between GraphQL and RDF](https://www.w3.org/Data/events/data-ws-2019/assets/position/Ruben%20Taelman.pdf)
-
-## Java
-- Configure Java [heap](https://stackoverflow.com/a/47388044/294552) size and if needed [stack](https://stackoverflow.com/a/44253141/294552) size.
-- Invoke Entrez API using Spring [webclient](https://www.baeldung.com/spring-webclient-resttemplate)
-    - Handling [XML response](https://stackoverflow.com/questions/68209076/spring-resttemplate-works-for-string-but-not-for-my-class)
-- JAXB [impl](https://stackoverflow.com/a/61283181/294552) in Java 11
-- JAXB [marshalling objects in lists](https://stackoverflow.com/a/3683678/294552)
-- Java [multiple resources with autocloseable try-with-resources](https://stackoverflow.com/a/30553153/294552)
-- [escape pipe character in grep](https://stackoverflow.com/a/23772497/294552)
-- Other older relevant links on Java and Entrez
-    - [download-pubmed-abstracts-in-java](https://stackoverflow.com/questions/5410151/download-pubmed-abstracts-in-java)
-    - Github repo : [pubmed_ws_client](https://github.com/renaud/pubmed_ws_client)
-- Read file into a [string](https://howtodoinjava.com/java/io/java-read-file-to-string-examples/)
-
-## Linux commands
-- Check if string exists in file in [bash](https://stackoverflow.com/a/4749368/294552)
-- Prevent grep from exiting when match is [not](https://unix.stackexchange.com/a/330662/47615) found
-
-## PostgreSQL
-- PostgreSQL [array](https://www.postgresql.org/docs/9.1/arrays.html) columns
-    - JDBC [insert](https://tonaconsulting.wordpress.com/2013/05/28/postgres-and-multi-dimensions-arrays-in-jdbc/) into array columns
-- PostgreSQL date column with [default](https://stackoverflow.com/a/910937/294552) value
-- PostgreSQL [upsert](https://www.postgresqltutorial.com/postgresql-upsert/) statement
-- PostgreSQL - pg_restore - restore only one selected [schema](https://stackoverflow.com/a/970491/294552)
-- PostgreSQL - [Array functions](https://www.postgresql.org/docs/8.4/functions-array.html)
-- Execute query on PostgreSQL using psql [non-interactively](https://stackoverflow.com/a/6405296/294552)
-- Save psql inline query output to a [file](https://stackoverflow.com/a/11870348/294552)
-- In PostgreSQL formulate a query to get [all items](https://stackoverflow.com/a/34592639/294552) in an array column
-
-## Postman
-- [Tutorial](https://learning.postman.com/docs/sending-requests/supported-api-frameworks/graphql/) for using GraphQL with Postman
 
 # References
