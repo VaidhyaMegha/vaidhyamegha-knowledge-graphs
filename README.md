@@ -14,6 +14,14 @@ VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.0232
   - Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download PheGenI from [here](https://www.ncbi.nlm.nih.gov/projects/gap/eqtl/EpiViewBE.cgi?type=dl.tab) and place PheGenI_Association_full.tab file 'data/open_knowledge_graph_on_clinical_trials'  folder.
+  - Download detailed_CoOccurs_2021.txt.gz from [here](https://data.lhncbc.nlm.nih.gov/public/ii/information/MRCOC/detailed_CoOccurs_2021.txt.gz) and unzip it. Place detailed_CoOccurs_2021.txt file in 'data/open_knowledge_graph_on_clinical_trials' folder.
+  	- Generate detailed_CoOccurs_2021_selected_fields.txt and detailed_CoOccurs_2021_selected_fields_sorted.txt files using following commands. Place both detailed_CoOccurs_2021_selected_fields.txt and detailed_CoOccurs_2021_selected_fields_sorted.txt files in 'data/open_knowledge_graph_on_clinical_trials' folder.
+  	```
+	cut -d '|' -f1,9,15 data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021.txt > data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021_selected_fields.txt
+	```
+	``` 
+	sort -u  data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021_selected_fields.txt > data/open_knowledge_graph_on_clinical_trials/detailed_CoOccurs_2021_selected_fields_sorted.txt
+	```
 
 - To compile and package
   ```
