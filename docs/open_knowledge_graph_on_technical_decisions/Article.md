@@ -96,6 +96,8 @@ In a separate terminal execute GraphQL query using curl (alternatively use Postm
 
 # Discussions
 
+This design utility framework can be extended for application code generation ex: through [JHipster](https://start.jhipster.tech/generate-application). 
+
 # Acknowledgements
 
 # Declarations
