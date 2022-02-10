@@ -58,6 +58,15 @@ The objective of this project was to curate a knowledge graph with dimensional a
 
 # Methods
 
+Knowledge graph will be designed as a directed-edge-labelled graph. 
+
+- It will be serialized as an adjacency list with below structure directly in a database table.
+```
+A question->a user chosen response-> Next question
+A question->a user chosen response-> Final technical choice as a literal
+```
+- The choice of persisting graph as a database table, instead of RDF, was made to allow curation through an 'admin' interface.
+- All entries in the adjacency table will be numeric ids. Each numeric id will in turn be a primary key in a different 'master' table.
 
 # Results
 

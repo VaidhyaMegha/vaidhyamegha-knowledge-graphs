@@ -4,7 +4,16 @@ This repo will host open knowledge graphs from [VaidhyaMegha](https://vaidhyameg
 
 # Open Knowledge Graph on Clinical Trials
 
-VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on clinical trials. This repository contains the source code along with instructions to generate and use the knowledge graph.
+VaidhyaMegha has built an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on clinical trials. 
+- This repository contains the source code along with instructions to generate and use this knowledge graph.
+- More information, including references, is available in [article](docs/open_knowledge_graph_on_clinical_trials/out.pdf) and also [here](docs/open_knowledge_graph_on_clinical_trials/README.md)
+
+# Knowledge graph for technical decision making
+
+VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02320.pdf) on technical decision making.
+- This [repository](https://github.com/VaidhyaMegha/technical-decision-framework) contains the source code along with instructions to use this periodically curated knowledge graph.
+- More information, including references, is available in [article](docs/open_knowledge_graph_on_technical_decisions/out.pdf) and also [here](docs/open_knowledge_graph_on_clinical_trials/README.md)
+
 
 ## Getting Started
 
