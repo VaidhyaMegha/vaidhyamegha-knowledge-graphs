@@ -7,6 +7,7 @@ cd temp_nt
 
 split -l100000 /data/vaidhyamegha_open_kg_clinical_trials.nt
 echo "open knowledge-graph-1" > ../commands.txt
+echo "clear" > ../commands.txt
 
 
 ls x* | while read f; do
