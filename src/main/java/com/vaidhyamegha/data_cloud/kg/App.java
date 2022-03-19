@@ -147,8 +147,8 @@ public class App {
 
     private void addPhenotypeGenotypes(Model model, Model meshModel) {
         String line = "";
-        Property pGene = model.createProperty("Gene");
-        Property pGeneID = model.createProperty("GeneID");
+        Property pGene = model.createProperty( NAMED_EDGE +"Gene");
+        Property pGeneID = model.createProperty( NAMED_EDGE +"GeneID");
 
         try (BufferedReader br = new BufferedReader(new FileReader(phegeni));) {
 
@@ -187,7 +187,7 @@ public class App {
     }
 
     private void addMeSHCoOccurrences(Model model, Model meshModel) { //TODO: we will use mesHModel more appropriately soon to pick the RDF node directly from there.
-        Property pMeSHDUI = model.createProperty("MeSH_DUI");
+        Property pMeSHDUI = model.createProperty( NAMED_EDGE +"MeSH_DUI");
         String qAllArticles = prop.getProperty("all_articles");
         String line = "";
 
@@ -229,8 +229,8 @@ public class App {
     }
 
     private void addAllTrials(Model model) {
-        Property pType = model.createProperty(RDF_SYNTAX_NS_TYPE);
-        Property pTrialId = model.createProperty(RDF_SCHEMA_LABEL);
+        Property pType = model.createProperty( NAMED_EDGE +RDF_SYNTAX_NS_TYPE);
+        Property pTrialId = model.createProperty( NAMED_EDGE +RDF_SCHEMA_LABEL);
 
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
@@ -276,8 +276,8 @@ public class App {
     }
 
     private void addTrialArticles(Model model, String trial, Integer[] articles) {
-        Property pPubMedArticle = model.createProperty("Pubmed_Article");
-        Property pArticleId = model.createProperty(RDF_SCHEMA_LABEL);
+        Property pPubMedArticle = model.createProperty( NAMED_EDGE +"Pubmed_Article");
+        Property pArticleId = model.createProperty( NAMED_EDGE +RDF_SCHEMA_LABEL);
 
         for (Integer a : articles) {
             Resource rArticle = RESOURCE.PUBMED_ARTICLE.createResource(model,String.valueOf(a));
@@ -318,14 +318,14 @@ public class App {
 
     private void addTrialConditions(Model model, Model meshModel) {
         String query = prop.getProperty("aact_browse_conditions");
-        Property p = model.createProperty("Condition");
+        Property p = model.createProperty( NAMED_EDGE +"Condition");
 
         addTrialToMeSHLinks(model, meshModel, query, p);
     }
 
     private void addTrialInterventions(Model model, Model meshModel) {
         String query = prop.getProperty("aact_browse_interventions");
-        Property p = model.createProperty("Intervention");
+        Property p = model.createProperty( NAMED_EDGE +"Intervention");
 
         addTrialToMeSHLinks(model, meshModel, query, p);
     }

@@ -4,6 +4,7 @@
     <option name="perlInterpreter" value="Local, System: Perl 5.32.1" />
   </component>
   <component name="Perl5XSubsState">
+    <option name="isActual" value="false" />
     <option name="myFilesMap">
       <map>
         <entry key="/usr/lib/x86_64-linux-gnu/perl-base/auto/Cwd/Cwd.so" value="1627907055000" />

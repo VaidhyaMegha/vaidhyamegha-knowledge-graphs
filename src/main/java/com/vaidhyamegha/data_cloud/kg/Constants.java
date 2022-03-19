@@ -6,4 +6,5 @@ public class Constants {
     static final String PIPE = "\\|";
     static final String TAB = "\\t";
     static final String OPEN_KG_CT_NS_TYPE = "https://vaidhyamegha.com/open_kg/ct";
+    static final String NAMED_EDGE = "https://vaidhyamegha.com/named_edge/";
 }
