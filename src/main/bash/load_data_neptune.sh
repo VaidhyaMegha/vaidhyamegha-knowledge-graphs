@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+# reference : https://github.com/eclipse/rdf4j/issues/1104#issuecomment-475808996
+
 rm -rf temp_nt
 mkdir temp_nt
 cd temp_nt
