@@ -229,8 +229,8 @@ public class App {
     }
 
     private void addAllTrials(Model model) {
-        Property pType = model.createProperty( NAMED_EDGE +RDF_SYNTAX_NS_TYPE);
-        Property pTrialId = model.createProperty( NAMED_EDGE +RDF_SCHEMA_LABEL);
+        Property pType = model.createProperty( RDF_SYNTAX_NS_TYPE);
+        Property pTrialId = model.createProperty( RDF_SCHEMA_LABEL);
 
         String qTrialIds = prop.getProperty("trial_ids");
         String qTrialArticles = prop.getProperty("select_trial_articles");
@@ -277,7 +277,7 @@ public class App {
 
     private void addTrialArticles(Model model, String trial, Integer[] articles) {
         Property pPubMedArticle = model.createProperty( NAMED_EDGE +"Pubmed_Article");
-        Property pArticleId = model.createProperty( NAMED_EDGE +RDF_SCHEMA_LABEL);
+        Property pArticleId = model.createProperty( RDF_SCHEMA_LABEL);
 
         for (Integer a : articles) {
             Resource rArticle = RESOURCE.PUBMED_ARTICLE.createResource(model,String.valueOf(a));
