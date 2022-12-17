@@ -19,7 +19,7 @@ VaidhyaMegha is building an open [knowledge graph](https://arxiv.org/pdf/2003.02
 
 - Pre-requisite steps
   - Create a folder  'lib'. Download algs4.jar file from [here](https://algs4.cs.princeton.edu/code/algs4.jar) and place in 'lib' folder.
-  - Download hypergraphql jar file from [here](https://www.hypergraphql.org/resources/hypergraphql-3.0.1-exe.jar) and place in 'lib' folder.
+  - Download hypergraphql jar file from [here](https://github.com/hypergraphql/hypergraphql/releases/download/3.0.1/hypergraphql-3.0.1-exe.jar) and place in 'lib' folder.
   - Dowload 'vocabulary_1.0.0.ttl' file from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/vocabulary_1.0.0.ttl) and place in 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download mesh2022.nt.gz from [here](https://nlmpubs.nlm.nih.gov/projects/mesh/rdf/2022/mesh2022.nt.gz) and unzip it. Place mesh2022.nt file 'data/open_knowledge_graph_on_clinical_trials'  folder.
   - Download PheGenI from [here](https://www.ncbi.nlm.nih.gov/projects/gap/eqtl/EpiViewBE.cgi?type=dl.tab) and place PheGenI_Association_full.tab file 'data/open_knowledge_graph_on_clinical_trials'  folder.
