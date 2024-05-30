@@ -1,0 +1,23 @@
+type __Context {
+    name:           _@href(iri: "http://xmlns.com/foaf/0.1/name")
+    label:          _@href(iri: "http://www.w3.org/2000/01/rdf-schema#label")
+    trial:          _@href(iri: "https://vaidhyamegha.com/open_kg/ct")
+    mesh:           _@href(iri: "http://id.nlm.nih.gov/mesh/vocab#TreeNumber")
+    article:        _@href(iri: "https://pubmed.ncbi.nlm.nih.gov")
+}
+
+
+type trial @service(id:"vaidhyamegha-openkg-ct") {
+    label: [String] @service(id:"vaidhyamegha-openkg-ct")
+    Intervention: [String] @service(id:"vaidhyamegha-openkg-ct")
+    Condition: [String] @service(id:"vaidhyamegha-openkg-ct")
+}
+
+type article @service(id:"vaidhyamegha-openkg-ct") {
+    label: [String] @service(id:"vaidhyamegha-openkg-ct")
+}
+
+type mesh @service(id:"mesh") {
+    label: [String] @service(id:"mesh")
+}
+

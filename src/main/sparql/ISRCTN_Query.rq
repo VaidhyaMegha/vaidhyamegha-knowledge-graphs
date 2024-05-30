@@ -1,0 +1,5 @@
+select  ?s ?p ?o
+where {
+     ?s ?p ?o .
+     filter( regex(str(?s), "ISRCTN98089900" ))
+}
