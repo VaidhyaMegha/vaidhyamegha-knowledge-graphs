@@ -10,7 +10,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lib.path>${basedir}/lib</lib.path>
     </properties>
 
     <build>
@@ -171,23 +170,15 @@
             <version>3.25.0-GA</version>
         </dependency>
         <dependency>
-            <groupId>edu.princeton.cs</groupId>
-            <artifactId>algs4</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${lib.path}/algs4.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.hypergraphql</groupId>
-            <artifactId>graphql</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${lib.path}/hypergraphql-3.0.1-exe.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.1</version>
+        </dependency>
+        <!-- Jedis: Redis client for connecting to Samyama Graph DB -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>5.1.0</version>
         </dependency>
     </dependencies>
 </project>
