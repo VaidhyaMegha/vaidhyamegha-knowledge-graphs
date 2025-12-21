@@ -16,10 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static com.vaidhyamegha.data_cloud.kg.Constants.*;
 import static org.kohsuke.args4j.OptionHandlerFilter.ALL;
@@ -69,6 +66,9 @@ public class App {
     @Option(name = "-d", aliases = "--disease-id", usage = "MeSH id for a disease.", required = false)
     private String disease;
 
+    // Samyama client for connecting to Samyama Graph Database
+    private SamyamaClient samyamaClient = null;
+
     private Properties prop = null;
 
     public static void main(String[] args) throws IOException {
@@ -82,40 +82,83 @@ public class App {
             Model model = initialize(args, parser);
 
             if (mode == MODE.BUILD) {
-                addAllTrials(model);
+                // Initialize Samyama client using config properties
+                String host = prop.getProperty("samyama_host", "localhost");
+                int port = Integer.parseInt(prop.getProperty("samyama_port", "6379"));
+                String graphName = prop.getProperty("samyama_graph_name", "knowledge_graph");
 
-                Model vocab = ModelFactory.createDefaultModel();
-                vocab.read(meshVocab, "TURTLE");
+                samyamaClient = new SamyamaClient(host, port, graphName);
 
+                // Test connection to Samyama
+                if (!samyamaClient.testConnection()) {
+                    throw new RuntimeException("Cannot connect to Samyama at " + host + ":" + port);
+                }
+                System.out.println("Connected to Samyama Graph Database");
+
+                // Load MeSH vocabulary for term lookups (still using Jena for reading RDF files)
                 Model meshModel = ModelFactory.createDefaultModel();
                 meshModel.read(meshRDF, "NT");
 
-                addTrialConditions(model, meshModel);
-                addTrialInterventions(model, meshModel);
+                // Build knowledge graph in Samyama
+                addAllTrialsToSamyama();
+                addTrialArticlesToSamyama();  // Fetch PubMed articles via Entrez API
+                addTrialConditionsToSamyama(meshModel);
+                addTrialInterventionsToSamyama(meshModel);
+                // Note: addMeSHCoOccurrencesToSamyama requires MRCOC file (optional)
+                // addMeSHCoOccurrencesToSamyama(meshModel);
+                addPhenotypeGenotypesToSamyama(meshModel);
 
-                addMeSHCoOccurrences(model, meshModel);
-
-                addPhenotypeGenotypes(model, meshModel);
-                RDFDataMgr.write(new FileOutputStream(output), model, Lang.NT);
+                System.out.println("Knowledge graph built successfully in Samyama");
+                samyamaClient.close();
             } else if(mode == MODE.CLI) {
-                String q = Files.readString(Path.of(query));
-                model.read(output, "NT");
-                try ( QueryExecution qexec = QueryExecutionFactory.create(q, model) ) {
-                    org.apache.jena.query.ResultSet rs = qexec.execSelect() ;
+                // Initialize Samyama client
+                String host = prop.getProperty("samyama_host", "localhost");
+                int port = Integer.parseInt(prop.getProperty("samyama_port", "6379"));
+                String graphName = prop.getProperty("samyama_graph_name", "knowledge_graph");
 
-                    System.out.println("Results: ") ;
-                    System.out.println("-------- ") ;
-                    while (rs.hasNext()) {
-                        QuerySolution rb = rs.nextSolution() ;
+                samyamaClient = new SamyamaClient(host, port, graphName);
 
-                        List<String> v = new ArrayList<>();
-                        rb.varNames().forEachRemaining(v::add);
-
-                        for (String s: v) System.out.println(rb.get(s));
-                    }
+                // Check if query is a file path or direct query string
+                String cypherQuery;
+                File queryFile = new File(query);
+                if (queryFile.exists()) {
+                    // Read query from file
+                    cypherQuery = Files.readString(Path.of(query));
+                    System.out.println("Loaded query from file: " + query);
+                } else {
+                    // Use directly as query string
+                    cypherQuery = query;
                 }
+
+                System.out.println("Executing Cypher query: " + cypherQuery);
+                System.out.println("Results: ");
+                System.out.println("-------- ");
+
+                // Execute query and print results
+                Object result = samyamaClient.executeQuery(cypherQuery);
+                System.out.println(result);
+
+                samyamaClient.close();
             }  else if(mode == MODE.SERVER) {
-                org.hypergraphql.Application.main(new String[]{"--config", hqlConfig});
+                // Samyama already runs as its own server on port 6379
+                // Just print instructions for connecting
+                String host = prop.getProperty("samyama_host", "localhost");
+                int port = Integer.parseInt(prop.getProperty("samyama_port", "6379"));
+                String graphName = prop.getProperty("samyama_graph_name", "knowledge_graph");
+
+                System.out.println("=========================================");
+                System.out.println("Samyama Graph Database Server");
+                System.out.println("=========================================");
+                System.out.println("Samyama should be running at: " + host + ":" + port);
+                System.out.println("Graph name: " + graphName);
+                System.out.println("");
+                System.out.println("To connect, use redis-cli:");
+                System.out.println("  redis-cli -h " + host + " -p " + port);
+                System.out.println("");
+                System.out.println("Example queries:");
+                System.out.println("  GRAPH.QUERY " + graphName + " \"MATCH (t:Trial) RETURN t LIMIT 10\"");
+                System.out.println("  GRAPH.QUERY " + graphName + " \"MATCH (t:Trial)-[:STUDIES]->(c:Condition) RETURN t, c\"");
+                System.out.println("=========================================");
             } else {
                 throw new UnsupportedOperationException("Non-build modes are not yet supported");
             }
@@ -362,18 +405,368 @@ public class App {
     }
 
     private Properties readProperties(ClassLoader cl) {
-        try (InputStream input = cl.getResourceAsStream("config.properties")) {
+        // Try config-local.properties first (for local development), fallback to config.properties
+        InputStream input = cl.getResourceAsStream("config-local.properties");
+        String configFile = "config-local.properties";
 
+        if (input == null) {
+            input = cl.getResourceAsStream("config.properties");
+            configFile = "config.properties";
+        }
+
+        try {
             Properties prop = new Properties();
 
             if (input == null) throw new RuntimeException("Sorry, unable to find config.properties");
 
+            System.out.println("INFO: Loading configuration from " + configFile);
             prop.load(input);
 
             return prop;
         } catch (IOException ex) {
             ex.printStackTrace();
             throw new RuntimeException("Sorry, unable to find config.properties");
+        } finally {
+            if (input != null) {
+                try { input.close(); } catch (IOException e) { /* ignore */ }
+            }
+        }
+    }
+
+    // ============================================================
+    // Samyama Methods - Create nodes and edges in Samyama Graph DB
+    // ============================================================
+
+    /**
+     * Load all clinical trials from AACT database and create Trial nodes in Samyama.
+     */
+    private void addAllTrialsToSamyama() {
+        String qTrialIds = prop.getProperty("trial_ids");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(trials));
+             Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                     prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement sTrialIds = conn.prepareStatement(qTrialIds)) {
+
+            ResultSet resultSet = sTrialIds.executeQuery();
+            int count = 0;
+
+            while (resultSet.next()) {
+                String trialId = resultSet.getString("trial_id");
+
+                // Create Trial node in Samyama
+                String uri = RESOURCE.TRIAL.createURI(trialId);
+                Map<String, Object> props = new HashMap<>();
+                props.put("id", trialId);
+                props.put("uri", uri);
+
+                String cypherQuery = CypherQueryBuilder.createNode("Trial", props);
+                samyamaClient.createNode(cypherQuery);
+
+                bw.write(trialId + "\n");
+                count++;
+
+                if (count % 10000 == 0) {
+                    System.out.println("Created " + count + " Trial nodes...");
+                }
+            }
+
+            System.out.println("Total Trial nodes created: " + count);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Unable to connect to database");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't write to trials file");
+        }
+    }
+
+    /**
+     * Fetch PubMed articles linked to trials via Entrez API and create Article nodes + REFERENCED_IN edges.
+     * This calls the NCBI Entrez E-utilities API for each trial, with rate limiting.
+     */
+    private void addTrialArticlesToSamyama() {
+        String qTrialIds = prop.getProperty("trial_ids");
+        Set<String> createdArticles = new HashSet<>();
+        int articleCount = 0;
+        int edgeCount = 0;
+        int apiCalls = 0;
+
+        System.out.println("Fetching PubMed articles for trials from Entrez API...");
+        System.out.println("Note: API rate-limited to ~3 requests/second");
+
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement sTrialIds = conn.prepareStatement(qTrialIds)) {
+
+            ResultSet resultSet = sTrialIds.executeQuery();
+
+            while (resultSet.next()) {
+                String trialId = resultSet.getString("trial_id");
+
+                try {
+                    // Rate limiting: pause 350ms between API calls (~3 requests/sec)
+                    if (apiCalls > 0) {
+                        Thread.sleep(350);
+                    }
+
+                    // Call Entrez API to get PubMed articles linked to this trial
+                    ESearchResult result = EntrezClient.getPubMedIds(trialId);
+                    apiCalls++;
+
+                    if (result != null && result.getIdList() != null) {
+                        for (Integer pmid : result.getIdList()) {
+                            String pmidStr = String.valueOf(pmid);
+
+                            // Create Article node if not already created
+                            if (!createdArticles.contains(pmidStr)) {
+                                Map<String, Object> props = new HashMap<>();
+                                props.put("pmid", pmidStr);
+                                props.put("uri", RESOURCE.PUBMED_ARTICLE.createURI(pmidStr));
+
+                                String createNodeQuery = CypherQueryBuilder.createNode("Article", props);
+                                samyamaClient.createNode(createNodeQuery);
+                                createdArticles.add(pmidStr);
+                                articleCount++;
+                            }
+
+                            // Create REFERENCED_IN edge: Trial -[:REFERENCED_IN]-> Article
+                            String createEdgeQuery = CypherQueryBuilder.createTrialReferencedInArticle(trialId, pmidStr);
+                            samyamaClient.createEdge(createEdgeQuery);
+                            edgeCount++;
+                        }
+                    }
+
+                    if (apiCalls % 100 == 0) {
+                        System.out.println("Processed " + apiCalls + " trials, created " + articleCount + " articles, " + edgeCount + " edges...");
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error fetching articles for trial " + trialId + ": " + e.getMessage());
+                    // Continue with next trial
+                }
+            }
+
+            System.out.println("Total Entrez API calls: " + apiCalls);
+            System.out.println("Total Article nodes created: " + articleCount);
+            System.out.println("Total REFERENCED_IN edges created: " + edgeCount);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Unable to connect to database");
+        }
+    }
+
+    /**
+     * Load trial conditions from AACT and create Condition nodes + STUDIES edges in Samyama.
+     */
+    private void addTrialConditionsToSamyama(Model meshModel) {
+        String query = prop.getProperty("aact_browse_conditions");
+        addTrialToMeSHLinksToSamyama(meshModel, query, "Condition", "STUDIES");
+    }
+
+    /**
+     * Load trial interventions from AACT and create Drug nodes + USES edges in Samyama.
+     */
+    private void addTrialInterventionsToSamyama(Model meshModel) {
+        String query = prop.getProperty("aact_browse_interventions");
+        addTrialToMeSHLinksToSamyama(meshModel, query, "Drug", "USES");
+    }
+
+    /**
+     * Helper method to create MeSH-related nodes and edges in Samyama.
+     */
+    private void addTrialToMeSHLinksToSamyama(Model meshModel, String query, String nodeLabel, String edgeType) {
+        try (Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            int nodeCount = 0;
+            int edgeCount = 0;
+            Set<String> createdNodes = new HashSet<>();  // Track created nodes to avoid duplicates
+
+            while (resultSet.next()) {
+                String trialId = resultSet.getString("nct_id");
+                String meshTerm = resultSet.getString("mesh_term");
+
+                // Find MeSH DUI from meshModel
+                StmtIterator si = findStatements(meshModel, meshTerm);
+
+                if (si.hasNext()) {
+                    Statement s = si.nextStatement();
+                    String meshUri = s.getSubject().getURI();
+                    // Extract DUI from URI (last part)
+                    String meshDui = meshUri.substring(meshUri.lastIndexOf("/") + 1);
+
+                    // Create MeSH node if not already created
+                    if (!createdNodes.contains(meshDui)) {
+                        Map<String, Object> props = new HashMap<>();
+                        props.put("mesh_id", meshDui);
+                        props.put("name", meshTerm);
+                        props.put("uri", RESOURCE.MESH_DUI.createURI(meshDui));
+
+                        String createNodeQuery = CypherQueryBuilder.createNode(nodeLabel, props);
+                        samyamaClient.createNode(createNodeQuery);
+                        createdNodes.add(meshDui);
+                        nodeCount++;
+                    }
+
+                    // Create edge: Trial -[STUDIES/USES]-> Condition/Drug
+                    String createEdgeQuery = CypherQueryBuilder.createEdge(
+                            "Trial", "id", trialId,
+                            edgeType,
+                            nodeLabel, "mesh_id", meshDui
+                    );
+                    samyamaClient.createEdge(createEdgeQuery);
+                    edgeCount++;
+
+                    if (edgeCount % 10000 == 0) {
+                        System.out.println("Created " + edgeCount + " " + edgeType + " edges...");
+                    }
+                }
+            }
+
+            System.out.println("Total " + nodeLabel + " nodes created: " + nodeCount);
+            System.out.println("Total " + edgeType + " edges created: " + edgeCount);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Unable to connect to database");
+        }
+    }
+
+    /**
+     * Load MeSH co-occurrences and create edges in Samyama.
+     */
+    private void addMeSHCoOccurrencesToSamyama(Model meshModel) {
+        String qAllArticles = prop.getProperty("all_articles");
+        String line = "";
+        int edgeCount = 0;
+        Set<String> createdArticles = new HashSet<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(mrcoc));
+             Connection conn = DriverManager.getConnection(prop.getProperty("aact_url"),
+                     prop.getProperty("user"), prop.getProperty("password"));
+             PreparedStatement sAllArticles = conn.prepareStatement(qAllArticles)) {
+
+            ResultSet resultSet = sAllArticles.executeQuery();
+
+            while (resultSet.next()) {
+                String article = resultSet.getString("article");
+
+                // Create Article node if not exists
+                if (!createdArticles.contains(article)) {
+                    Map<String, Object> props = new HashMap<>();
+                    props.put("pmid", article);
+                    props.put("uri", RESOURCE.PUBMED_ARTICLE.createURI(article));
+
+                    String createNodeQuery = CypherQueryBuilder.createNode("Article", props);
+                    samyamaClient.createNode(createNodeQuery);
+                    createdArticles.add(article);
+                }
+
+                if (line != null && !article.equals(line.split(PIPE)[0]))
+                    while ((line = br.readLine()) != null) if (article.equals(line.split(PIPE)[0])) break;
+
+                if (line == null) break;
+
+                do {
+                    String[] ids = line.split(PIPE);
+                    String dui1 = ids[1];
+                    String dui2 = ids[2];
+
+                    // Create COOCCURS_WITH edges from Article to MeSH terms
+                    String edge1 = CypherQueryBuilder.createEdge(
+                            "Article", "pmid", ids[0],
+                            "COOCCURS_WITH",
+                            "Condition", "mesh_id", dui1
+                    );
+                    samyamaClient.createEdge(edge1);
+
+                    String edge2 = CypherQueryBuilder.createEdge(
+                            "Article", "pmid", ids[0],
+                            "COOCCURS_WITH",
+                            "Condition", "mesh_id", dui2
+                    );
+                    samyamaClient.createEdge(edge2);
+
+                    edgeCount += 2;
+                    line = br.readLine();
+                } while (line != null && article.equals(line.split(PIPE)[0]));
+            }
+
+            System.out.println("Total Article nodes created: " + createdArticles.size());
+            System.out.println("Total COOCCURS_WITH edges created: " + edgeCount);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+            throw new RuntimeException("Unable to connect to database");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't read MeSH co-occurrence file");
+        }
+    }
+
+    /**
+     * Load phenotype-genotype associations and create Gene nodes + edges in Samyama.
+     */
+    private void addPhenotypeGenotypesToSamyama(Model meshModel) {
+        String line = "";
+        int geneCount = 0;
+        int edgeCount = 0;
+        Set<String> createdGenes = new HashSet<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(phegeni))) {
+
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(TAB);
+                if (parts.length < 8) continue;
+
+                String trait = parts[1];
+                String geneId1 = parts[5];
+                String geneId2 = parts[7];
+
+                StmtIterator si = findStatements(meshModel, trait);
+
+                if (si.hasNext()) {
+                    Statement s = si.nextStatement();
+                    String meshUri = s.getSubject().getURI();
+                    String meshDui = meshUri.substring(meshUri.lastIndexOf("/") + 1);
+
+                    // Create Gene nodes if not exists
+                    for (String geneId : new String[]{geneId1, geneId2}) {
+                        if (!geneId.isEmpty() && !createdGenes.contains(geneId)) {
+                            Map<String, Object> props = new HashMap<>();
+                            props.put("gene_id", geneId);
+                            props.put("uri", RESOURCE.GENE_ID.createURI(geneId));
+
+                            String createNodeQuery = CypherQueryBuilder.createNode("Gene", props);
+                            samyamaClient.createNode(createNodeQuery);
+                            createdGenes.add(geneId);
+                            geneCount++;
+                        }
+
+                        // Create ASSOCIATED_WITH edge: Gene -> Condition
+                        if (!geneId.isEmpty()) {
+                            String edgeQuery = CypherQueryBuilder.createEdge(
+                                    "Gene", "gene_id", geneId,
+                                    "ASSOCIATED_WITH",
+                                    "Condition", "mesh_id", meshDui
+                            );
+                            samyamaClient.createEdge(edgeQuery);
+                            edgeCount++;
+                        }
+                    }
+                }
+            }
+
+            System.out.println("Total Gene nodes created: " + geneCount);
+            System.out.println("Total ASSOCIATED_WITH edges created: " + edgeCount);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Couldn't read PheGenI file");
         }
     }
 }
