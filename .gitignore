@@ -25,3 +25,11 @@ target/
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 .chat
+
+# Samyama integration docs (internal working documents)
+docs/SAMYAMA_CLIENT_EXPLANATION.md
+docs/SAMYAMA_INTEGRATION_APPROACH.md
+docs/SAMYAMA_INTEGRATION_UNDERSTANDING.md
+
+# Local config file (contains local database credentials - not committed)
+src/main/resources/config-local.properties
